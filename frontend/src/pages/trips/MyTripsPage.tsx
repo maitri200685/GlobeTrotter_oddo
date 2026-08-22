@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   PlusCircle, 
@@ -25,8 +25,13 @@ import type { Trip, TripStatus } from '@/types/trip.types';
 
 export const MyTripsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { trips, filters, setFilters, duplicateTrip, deleteTrip, isLoading } = useTrip();
+  const { trips, filters, setFilters, duplicateTrip, deleteTrip, isLoading, refreshTrips } = useTrip();
   const { info, success } = useToast();
+
+  // Always refetch trips from backend when page mounts
+  useEffect(() => {
+    refreshTrips();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [tripToDelete, setTripToDelete] = useState<Trip | null>(null);

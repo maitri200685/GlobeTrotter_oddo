@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { tripService } from '@/services/tripService';
 import type { 
   Trip, 
@@ -31,25 +31,34 @@ export const TripProvider: React.FC<{ children: React.ReactNode }> = ({ children
     status: 'all',
     searchQuery: '',
     sortBy: 'date',
-    sortOrder: 'asc',
+    sortOrder: 'desc', // newest first
   });
+
+  // Use refs to avoid stale closures in callbacks
+  const filtersRef = useRef(filters);
+  filtersRef.current = filters;
+  const activeTripRef = useRef(activeTrip);
+  activeTripRef.current = activeTrip;
 
   const { success, info, error } = useToast();
 
+  // loadTrips does NOT depend on activeTrip — removing it from deps to prevent loops
   const loadTrips = useCallback(async (currentFilters: TripFilterParams) => {
     setIsLoading(true);
     try {
       const data = await tripService.getTrips(currentFilters);
       setTrips(data);
-      if (data.length > 0 && !activeTrip) {
+      // Only set active trip if none is set yet
+      if (data.length > 0 && !activeTripRef.current) {
         setActiveTrip(data[0]);
       }
     } catch (err: any) {
       console.error('Failed to load trips:', err);
+      // Keep existing trips in state, don't wipe them on error
     } finally {
       setIsLoading(false);
     }
-  }, [activeTrip]);
+  }, []); // No deps — stable function reference
 
   useEffect(() => {
     loadTrips(filters);
@@ -60,20 +69,37 @@ export const TripProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const refreshTrips = useCallback(async () => {
-    await loadTrips(filters);
-  }, [filters, loadTrips]);
+    await loadTrips(filtersRef.current);
+  }, [loadTrips]);
 
   const selectTrip = useCallback(async (id: string) => {
-    const trip = await tripService.getTripById(id);
-    setActiveTrip(trip);
-    return trip;
-  }, []);
+    // First check if we already have it in state
+    const existing = trips.find(t => t.id === id);
+    if (existing) {
+      setActiveTrip(existing);
+      return existing;
+    }
+    try {
+      const trip = await tripService.getTripById(id);
+      setActiveTrip(trip);
+      return trip;
+    } catch (err) {
+      // If not found in backend, try local trips
+      const localTrip = trips.find(t => t.id === id);
+      if (localTrip) {
+        setActiveTrip(localTrip);
+        return localTrip;
+      }
+      throw err;
+    }
+  }, [trips]);
 
   const createTrip = useCallback(async (dto: CreateTripDTO) => {
     setIsLoading(true);
     try {
       const newTrip = await tripService.createTrip(dto);
-      setTrips((prev) => [newTrip, ...prev]);
+      // Optimistically add to state immediately — user sees it right away
+      setTrips((prev) => [newTrip, ...prev.filter(t => t.id !== newTrip.id)]);
       setActiveTrip(newTrip);
       success('Trip Created!', `"${newTrip.title}" is ready for destinations & activities.`);
       return newTrip;
@@ -88,17 +114,15 @@ export const TripProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateTrip = useCallback(async (id: string, updates: Partial<Trip>) => {
     try {
       const updated = await tripService.updateTrip(id, updates);
-      setTrips((prev) => prev.map((t) => (t.id === id ? updated : t)));
-      if (activeTrip?.id === id) {
-        setActiveTrip(updated);
-      }
-      success('Trip Updated', `Changes to "${updated.title}" saved.`);
+      // Merge updates into existing trip to preserve all fields
+      setTrips((prev) => prev.map((t) => t.id === id ? { ...t, ...updated } : t));
+      setActiveTrip(prev => prev?.id === id ? { ...prev, ...updated } : prev);
       return updated;
     } catch (err: any) {
       error('Update Failed', err.message);
       throw err;
     }
-  }, [activeTrip, success, error]);
+  }, [error]);
 
   const duplicateTrip = useCallback(async (id: string) => {
     try {
@@ -116,16 +140,19 @@ export const TripProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await tripService.deleteTrip(id);
       setTrips((prev) => prev.filter((t) => t.id !== id));
-      if (activeTrip?.id === id) {
-        const remaining = trips.filter((t) => t.id !== id);
-        setActiveTrip(remaining[0] || null);
-      }
+      setActiveTrip(prev => {
+        if (prev?.id === id) {
+          // Set to first remaining trip
+          return null; // Will be set on next render
+        }
+        return prev;
+      });
       info('Trip Deleted', 'The itinerary has been removed from your account.');
     } catch (err: any) {
       error('Delete Failed', err.message);
       throw err;
     }
-  }, [activeTrip, trips, info, error]);
+  }, [info, error]);
 
   return (
     <TripContext.Provider

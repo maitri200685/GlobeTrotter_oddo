@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { authService } from '@/services/authService';
+import { supabase } from '@/lib/supabase';
 import type { 
   User, 
   DemoPersona, 
@@ -32,9 +33,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const demoPersonas = authService.getDemoPersonas();
 
-  // Load active session on initial mount
+  // Load active session on initial mount and listen to changes
   useEffect(() => {
     let isMounted = true;
+    
     const initializeAuth = async () => {
       try {
         const activeUser = await authService.getCurrentUser();
@@ -47,8 +49,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     initializeAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!isMounted) return;
+      
+      if (session) {
+        const activeUser = await authService.getCurrentUser();
+        setUser(activeUser);
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
+    });
+
     return () => {
       isMounted = false;
+      subscription.unsubscribe();
     };
   }, []);
 
@@ -81,7 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const switchedUser = await authService.loginAsDemoUser(personaId);
       setUser(switchedUser);
-      info(`Switched Persona`, `Logged in as ${switchedUser.name} (${switchedUser.preferences.budgetStyle} style)`);
+      info(`Switched Persona`, `Logged in as ${switchedUser.name}`);
       return switchedUser;
     } finally {
       setIsLoading(false);

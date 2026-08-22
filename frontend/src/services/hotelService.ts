@@ -1,3 +1,5 @@
+import { apiClient } from '../lib/apiClient';
+import { storageService } from './storageService';
 import type { Hotel, HotelFilterParams } from '@/types/inventory.types';
 
 const SEED_HOTELS: Hotel[] = [
@@ -186,63 +188,98 @@ const SEED_HOTELS: Hotel[] = [
   },
 ];
 
+/** Normalise a backend API hotel response into the Hotel shape our UI expects */
+function normalizeHotel(h: any): Hotel {
+  const seed = SEED_HOTELS.find(s => s.name.toLowerCase() === h.name?.toLowerCase());
+  return {
+    id: h.id,
+    name: h.name,
+    cityName: h.cityName || h.cities?.name || '',
+    country: h.country || h.cities?.country || '',
+    address: h.address || seed?.address || '',
+    rating: h.rating || h.userRating || seed?.rating || 4.5,
+    starRating: h.starRating || seed?.starRating || 4,
+    userRating: h.rating || h.userRating || seed?.rating || 4.5,
+    reviewsCount: h.reviewsCount || 0,
+    pricePerNight: h.pricePerNight || h.price_per_night || 0,
+    currency: h.currency || 'INR',
+    amenities: h.amenities || seed?.amenities || [],
+    coverImage: h.coverImage || (h.images && h.images[0]) || h.image_url || seed?.coverImage || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
+    images: h.images || [h.image_url || seed?.coverImage || ''],
+    gallery: h.gallery || h.images || [],
+    description: h.description || seed?.description || '',
+    aiMatchScore: h.aiMatchScore || seed?.aiMatchScore || 85,
+    whyAiRecommends: h.whyAiRecommends || h.whyRecommended || seed?.whyAiRecommends || 'Highly rated by travelers',
+    whyRecommended: h.whyRecommended || h.whyAiRecommends || seed?.whyRecommended || 'Highly rated by travelers',
+    coordinates: h.coordinates || (h.latitude ? { lat: h.latitude, lng: h.longitude } : seed?.coordinates),
+  };
+}
+
 class HotelService {
-  async getHotelsByCity(cityName?: string, filters?: HotelFilterParams): Promise<Hotel[]> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        let results = [...SEED_HOTELS];
-
-        if (cityName && cityName.trim()) {
-          const q = cityName.toLowerCase().trim();
-          results = results.filter(
-            (h) =>
-              h.cityName.toLowerCase().includes(q) ||
-              q.includes(h.cityName.toLowerCase())
-          );
-        }
-
-        if (filters?.minStarRating) {
-          results = results.filter((h) => h.starRating >= (filters.minStarRating || 0));
-        }
-
-        if (filters?.maxPrice) {
-          results = results.filter((h) => h.pricePerNight <= (filters.maxPrice || Infinity));
-        }
-
-        if (filters?.style && filters.style !== 'all') {
-          results = results.filter((h) => h.style === filters.style);
-        }
-
-        if (filters?.amenities && filters.amenities.length > 0) {
-          results = results.filter((h) =>
-            filters.amenities!.every((a) => h.amenities.includes(a))
-          );
-        }
-
-        // Sorting
-        if (filters?.sortBy === 'priceAsc') {
-          results.sort((a, b) => a.pricePerNight - b.pricePerNight);
-        } else if (filters?.sortBy === 'priceDesc') {
-          results.sort((a, b) => b.pricePerNight - a.pricePerNight);
-        } else if (filters?.sortBy === 'rating') {
-          results.sort((a, b) => b.userRating - a.userRating);
-        } else {
-          // Default: AI Match score desc
-          results.sort((a, b) => b.aiMatchScore - a.aiMatchScore);
-        }
-
-        resolve(results);
-      }, 100);
-    });
+  /** Called by TripHotelsPage with cityName (not cityId) */
+  async getHotelsByCity(cityNameOrId: string, filters?: HotelFilterParams): Promise<Hotel[]> {
+    // First try by city name via backend
+    try {
+      const data = await apiClient.get<Hotel[]>(`/hotels?city_name=${encodeURIComponent(cityNameOrId)}`);
+      if (data && data.length > 0) {
+        const normalized = data.map(normalizeHotel);
+        storageService.setItem(HOTELS_CACHE_KEY, normalized);
+        return this._applyFilters(normalized, filters);
+      }
+    } catch {}
+    // Fallback: filter seed data by city name
+    const name = cityNameOrId.toLowerCase();
+    const seedFiltered = SEED_HOTELS.filter(h =>
+      h.cityName.toLowerCase() === name ||
+      h.cityName.toLowerCase().includes(name) ||
+      name.includes(h.cityName.toLowerCase())
+    );
+    return this._applyFilters(seedFiltered.length > 0 ? seedFiltered : SEED_HOTELS, filters);
   }
 
-  async getHotelById(id: string): Promise<Hotel | null> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const found = SEED_HOTELS.find((h) => h.id === id);
-        resolve(found || null);
-      }, 50);
-    });
+  async getHotels(filters?: HotelFilterParams): Promise<Hotel[]> {
+    try {
+      const data = await apiClient.get<Hotel[]>('/hotels');
+      if (data && data.length > 0) return this._applyFilters(data.map(normalizeHotel), filters);
+      return this._applyFilters(SEED_HOTELS, filters);
+    } catch {
+      return this._applyFilters(SEED_HOTELS, filters);
+    }
+  }
+
+  private _applyFilters(hotels: Hotel[], filters?: HotelFilterParams): Hotel[] {
+    let result = [...hotels];
+    if (filters?.maxPrice) result = result.filter(h => h.pricePerNight <= filters.maxPrice!);
+    if (filters?.minStarRating) result = result.filter(h => (h.starRating || h.rating || 0) >= filters.minStarRating!);
+    if (filters?.searchQuery?.trim()) {
+      const q = filters.searchQuery.toLowerCase();
+      result = result.filter(h => h.name?.toLowerCase().includes(q) || h.cityName?.toLowerCase().includes(q));
+    }
+    if (filters?.sortBy === 'priceAsc') result.sort((a, b) => a.pricePerNight - b.pricePerNight);
+    if (filters?.sortBy === 'priceDesc') result.sort((a, b) => b.pricePerNight - a.pricePerNight);
+    if (filters?.sortBy === 'rating') result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    if (filters?.sortBy === 'aiMatch') result.sort((a, b) => (b.aiMatchScore || 0) - (a.aiMatchScore || 0));
+    return result;
+  }
+
+  async getHotelById(id: string): Promise<Hotel | undefined> {
+    try {
+      const hotels = await apiClient.get<Hotel[]>('/hotels');
+      const found = hotels.find(h => h.id === id);
+      if (found) return normalizeHotel(found);
+    } catch {}
+    return SEED_HOTELS.find(h => h.id === id);
+  }
+
+  async searchHotels(query: string, cityName?: string): Promise<Hotel[]> {
+    const lowerQuery = query.toLowerCase();
+    const results = SEED_HOTELS.filter(h =>
+      h.name.toLowerCase().includes(lowerQuery) ||
+      h.cityName.toLowerCase().includes(lowerQuery) ||
+      h.address?.toLowerCase().includes(lowerQuery)
+    );
+    if (cityName) return results.filter(h => h.cityName.toLowerCase().includes(cityName.toLowerCase()));
+    return results;
   }
 }
 

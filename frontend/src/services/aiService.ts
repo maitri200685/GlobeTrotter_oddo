@@ -60,7 +60,7 @@ export interface AIAssistResponse {
   confidence: number;
 }
 
-const MOCK_DELAY = (ms = 1000) => new Promise((res) => setTimeout(res, ms));
+import { apiClient } from '../lib/apiClient';
 
 class AIService {
   /**
@@ -68,34 +68,22 @@ class AIService {
    * Backend: POST /api/ai/plan
    */
   async generateTripPlan(request: AIPlanRequest): Promise<AIGeneratedTrip> {
-    await MOCK_DELAY(1200);
-
-    const days = Math.round(
-      (new Date(request.endDate).getTime() - new Date(request.startDate).getTime()) / 86400000
-    );
-
+    const response = await apiClient.post<{ message: string; suggestions?: AISuggestion[] }>('/agent/chat', {
+      message: `Plan a trip to ${request.destination} from ${request.startDate} to ${request.endDate} for ${request.travelers} travelers with a budget of ${request.currency} ${request.budget}. Vibes: ${request.vibes.join(', ')}`,
+    });
+    
+    // In a full implementation, the backend would return a structured JSON plan 
+    // or persist it directly and we return the ID. For now, we adapt the response.
     return {
-      title: `${request.destination} ${request.vibes[0] || 'Explorer'} Trip`,
-      description: `A perfectly curated ${days}-day trip to ${request.destination} for ${request.travelers} traveler${request.travelers > 1 ? 's' : ''}.`,
+      title: `${request.destination} Trip`,
+      description: response.message,
       cities: [request.destination],
-      totalDays: days,
-      estimatedBudget: request.budget * 0.92,
+      totalDays: Math.round((new Date(request.endDate).getTime() - new Date(request.startDate).getTime()) / 86400000),
+      estimatedBudget: request.budget,
       currency: request.currency,
-      highlights: [
-        `Best ${request.vibes[0] || 'local'} experiences`,
-        'Top-rated accommodations for your style',
-        'Curated daily itinerary',
-        'Budget-optimized routing',
-      ],
-      itinerarySummary: Array.from({ length: Math.min(days, 5) }, (_, i) => ({
-        day: i + 1,
-        focus: i === 0 ? 'Arrival & Orientation' : i === days - 1 ? 'Departure' : request.vibes[i % request.vibes.length] || 'Exploration',
-        activities: ['Morning: Breakfast & Hotel Check-in', 'Afternoon: Local Sightseeing', 'Evening: Dinner & Leisure'],
-      })),
-      hotelSuggestions: [
-        { name: 'Top Recommended Hotel', stars: 4, pricePerNight: Math.round(request.budget / (days * 5)) },
-        { name: 'Budget-Friendly Stay', stars: 3, pricePerNight: Math.round(request.budget / (days * 8)) },
-      ],
+      highlights: ['AI Generated Itinerary'],
+      itinerarySummary: [],
+      hotelSuggestions: [],
       status: 'generated',
     };
   }
@@ -205,9 +193,9 @@ class AIService {
     const messageKey = isCostQuery ? 'cost' : isHotelQuery ? 'hotel' : isActivityQuery ? 'activity' : isScheduleQuery ? 'schedule' : 'default';
 
     return {
-      message: messages[messageKey],
-      suggestions,
-      confidence: 0.92,
+      message: response.message,
+      suggestions: response.suggestions || [],
+      confidence: 0.95,
     };
   }
 
@@ -216,30 +204,11 @@ class AIService {
    * Backend: POST /api/ai/optimize-budget
    */
   async optimizeBudget(tripId: string, currentBudget: number): Promise<AISuggestion[]> {
-    await MOCK_DELAY(600);
-
-    return [
-      {
-        id: `opt-1`,
-        type: 'swap_hotel',
-        title: 'Downgrade Hotel for 2 nights',
-        description: 'Use a budget guesthouse for 2 mid-trip nights when you\'re out all day anyway.',
-        budgetImpact: -3400,
-        currency: 'INR',
-        category: 'savings',
-        priority: 'high',
-      },
-      {
-        id: `opt-2`,
-        type: 'remove_activity',
-        title: 'Remove Redundant Tours',
-        description: '2 similar sightseeing tours on Day 1 and Day 3 can be consolidated into one.',
-        budgetImpact: -1800,
-        currency: 'INR',
-        category: 'optimization',
-        priority: 'medium',
-      },
-    ];
+    const response = await this.getAssistantSuggestions({
+      tripId,
+      query: 'How can I optimize my budget?',
+    });
+    return response.suggestions;
   }
 }
 

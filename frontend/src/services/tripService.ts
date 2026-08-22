@@ -1,144 +1,40 @@
+import { apiClient } from '../lib/apiClient';
 import { storageService } from './storageService';
 import type { 
   Trip, 
   TripFilterParams, 
   CreateTripDTO, 
-  TripBudget, 
-  BudgetStatus 
 } from '@/types/trip.types';
 
-const TRIPS_STORE_KEY = 'globetrotter_trips_store';
+const TRIPS_STORE_KEY = 'globetrotter_trips_v3';
 
-const SEED_TRIPS: Trip[] = [
-  {
-    id: 'trip-101',
-    userId: 'usr-aarav-101',
-    title: 'Goa Sun & Coastline',
-    description: 'Relaxed coastal escape featuring North Goa beaches, Portuguese heritage churches, street flea markets, and seaside sunset dining.',
-    coverImage: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&h=500&q=80',
-    startDate: '2026-09-10',
-    endDate: '2026-09-16',
-    totalDays: 6,
-    travelerCount: 2,
-    travelerType: 'couple',
-    status: 'upcoming',
-    travelStyle: 'comfort',
-    cities: [
-      {
-        id: 'city-goa',
-        cityName: 'Goa',
-        country: 'India',
-        daysAllocated: 6,
-        order: 1,
-        coverImage: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&h=400&q=80',
-        coordinates: { lat: 15.2993, lng: 74.1240 },
-      },
-    ],
-    hotels: [
-      {
-        id: 'htl-goa-1',
-        hotelName: 'Santana Beach Boutique Resort',
-        cityId: 'city-goa',
-        cityName: 'Candolim, Goa',
-        starRating: 4.5,
-        pricePerNight: 3200,
-        nights: 5,
-        totalCost: 16000,
-        currency: 'INR',
-        checkInDate: '2026-09-10',
-        checkOutDate: '2026-09-15',
-        address: 'Candolim Beach Road, North Goa',
-        image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&h=400&q=80',
-        amenities: ['Pool', 'Beachfront', 'Free Breakfast', 'WiFi', 'Spa'],
-        whyRecommended: '98% Match: Top-rated beachfront boutique stay inside your allocated budget.',
-      },
-    ],
-    transport: [
-      {
-        id: 'tr-goa-1',
-        fromCity: 'Ahmedabad (AMD)',
-        toCity: 'Goa (GOI)',
-        mode: 'flight',
-        carrierName: 'IndiGo 6E-442',
-        departureTime: '08:15',
-        arrivalTime: '10:05',
-        duration: '1h 50m',
-        cost: 6400,
-        currency: 'INR',
-        bookingReference: '6E-GOA982',
-        notes: 'Terminal 1 • Carry digital boarding pass',
-      },
-    ],
-    itinerary: [
-      {
-        id: 'it-1',
-        dayNumber: 1,
-        date: '2026-09-10',
-        cityName: 'Goa',
-        timeSlot: '11:30',
-        duration: '2 hours',
-        title: 'Check-in & Candolim Beach Relax',
-        category: 'hotel',
-        location: 'Candolim Beach, North Goa',
-        estimatedCost: 500,
-        currency: 'INR',
-        notes: 'Welcome coconut drink and beachfront stroll.',
-      },
-      {
-        id: 'it-2',
-        dayNumber: 1,
-        date: '2026-09-10',
-        cityName: 'Goa',
-        timeSlot: '18:00',
-        duration: '3 hours',
-        title: 'Sunset Seafood Dinner at Curlies',
-        category: 'food',
-        location: 'Anjuna Beach',
-        estimatedCost: 1800,
-        currency: 'INR',
-        notes: 'Reserved seaside shack table for sunset.',
-      },
-      {
-        id: 'it-3',
-        dayNumber: 2,
-        date: '2026-09-11',
-        cityName: 'Goa',
-        timeSlot: '09:00',
-        duration: '4 hours',
-        title: 'Old Goa Heritage Walk & Basilica',
-        category: 'culture',
-        location: 'Old Goa',
-        estimatedCost: 800,
-        currency: 'INR',
-        notes: 'Explore Basilica of Bom Jesus and Se Cathedral.',
-      },
-      {
-        id: 'it-4',
-        dayNumber: 3,
-        date: '2026-09-12',
-        cityName: 'Goa',
-        timeSlot: '08:00',
-        duration: '5 hours',
-        title: 'Grande Island Scuba & Snorkel Boat Trip',
-        category: 'adventure',
-        location: 'Grande Island, Goa',
-        estimatedCost: 3000,
-        currency: 'INR',
-        notes: 'Includes light breakfast, gear, and underwater video.',
-      },
-    ],
-    budget: {
-      targetBudget: 35000,
-      totalEstimatedCost: 28500,
+/** Ensure a trip from the backend has all required frontend fields */
+function normalizeTrip(t: any): Trip {
+  return {
+    id: t.id,
+    userId: t.userId || t.owner_id || '',
+    title: t.title || 'Untitled Trip',
+    description: t.description || '',
+    coverImage: t.coverImage || t.cover_image_url || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&h=500&q=80',
+    startDate: t.startDate || t.start_date || '',
+    endDate: t.endDate || t.end_date || '',
+    totalDays: t.totalDays || (t.startDate && t.endDate 
+      ? Math.max(1, Math.ceil((new Date(t.endDate).getTime() - new Date(t.startDate).getTime()) / 86400000) + 1)
+      : 0),
+    travelerCount: t.travelerCount || 2,
+    travelerType: t.travelerType || 'couple',
+    status: t.status || 'upcoming',
+    travelStyle: t.travelStyle || 'comfort',
+    cities: t.cities || [],
+    hotels: t.hotels || [],
+    transport: t.transport || [],
+    itinerary: t.itinerary || [],
+    budget: t.budget || {
+      targetBudget: t.total_budget || 0,
+      totalEstimatedCost: 0,
       currency: 'INR',
       status: 'healthy',
-      categories: {
-        accommodation: 16000,
-        transport: 6400,
-        activities: 3800,
-        food: 1800,
-        other: 500,
-      },
+      categories: { accommodation: 0, transport: 0, activities: 0, food: 0, other: 0 },
     },
     isShared: true,
     shareId: 'share-goa-sun-101',
@@ -289,204 +185,208 @@ const SEED_TRIPS: Trip[] = [
 ];
 
 class TripService {
-  constructor() {
-    const existing = storageService.getItem<Trip[] | null>(TRIPS_STORE_KEY, null);
-    if (!existing || existing.length === 0) {
-      storageService.setItem<Trip[]>(TRIPS_STORE_KEY, SEED_TRIPS);
+  async getTrips(filters?: TripFilterParams): Promise<Trip[]> {
+    try {
+      const params = new URLSearchParams();
+      if (filters?.status && filters.status !== 'all') {
+        params.append('status', filters.status);
+      }
+      const trips = await apiClient.get<Trip[]>(`/trips?${params.toString()}`);
+      const normalized = (trips || []).map(normalizeTrip);
+      
+      // Sync to localStorage
+      storageService.setItem<Trip[]>(TRIPS_STORE_KEY, normalized);
+      return this._applyClientFilters(normalized, filters);
+    } catch {
+      // Fallback: localStorage
+      const local = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, []);
+      return this._applyClientFilters(local, filters);
     }
   }
 
-  private calculateBudgetStatus(spent: number, target: number): BudgetStatus {
-    if (target <= 0) return 'healthy';
-    const ratio = spent / target;
-    if (ratio > 1.0) return 'exceeded';
-    if (ratio >= 0.85) return 'warning';
-    return 'healthy';
-  }
+  private _applyClientFilters(trips: Trip[], filters?: TripFilterParams): Trip[] {
+    let result = [...trips];
 
-  async getTrips(filters?: TripFilterParams): Promise<Trip[]> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        let trips = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, SEED_TRIPS);
+    if (filters?.status && filters.status !== 'all') {
+      result = result.filter(t => t.status === filters.status);
+    }
 
-        if (filters?.status && filters.status !== 'all') {
-          trips = trips.filter((t) => t.status === filters.status);
+    if (filters?.searchQuery?.trim()) {
+      const q = filters.searchQuery.toLowerCase().trim();
+      result = result.filter(
+        (t) =>
+          t.title?.toLowerCase().includes(q) ||
+          t.description?.toLowerCase().includes(q) ||
+          t.cities?.some((c) => c.cityName?.toLowerCase().includes(q))
+      );
+    }
+
+    if (filters?.sortBy) {
+      result.sort((a, b) => {
+        if (filters.sortBy === 'date') {
+          const dateA = a.startDate ? new Date(a.startDate).getTime() : 0;
+          const dateB = b.startDate ? new Date(b.startDate).getTime() : 0;
+          return dateA - dateB;
         }
+        if (filters.sortBy === 'budget') return (a.budget?.targetBudget || 0) - (b.budget?.targetBudget || 0);
+        if (filters.sortBy === 'duration') return (a.totalDays || 0) - (b.totalDays || 0);
+        if (filters.sortBy === 'title') return (a.title || '').localeCompare(b.title || '');
+        return 0;
+      });
+      if (filters.sortOrder === 'desc') result.reverse();
+    }
 
-        if (filters?.searchQuery && filters.searchQuery.trim()) {
-          const q = filters.searchQuery.toLowerCase().trim();
-          trips = trips.filter(
-            (t) =>
-              t.title.toLowerCase().includes(q) ||
-              t.description?.toLowerCase().includes(q) ||
-              t.cities.some((c) => c.cityName.toLowerCase().includes(q))
-          );
-        }
-
-        if (filters?.sortBy) {
-          trips = [...trips].sort((a, b) => {
-            if (filters.sortBy === 'date') {
-              return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
-            }
-            if (filters.sortBy === 'budget') {
-              return a.budget.targetBudget - b.budget.targetBudget;
-            }
-            if (filters.sortBy === 'duration') {
-              return a.totalDays - b.totalDays;
-            }
-            if (filters.sortBy === 'title') {
-              return a.title.localeCompare(b.title);
-            }
-            return 0;
-          });
-
-          if (filters.sortOrder === 'desc') {
-            trips.reverse();
-          }
-        }
-
-        resolve(trips);
-      }, 100);
-    });
+    return result;
   }
 
   async getTripById(id: string): Promise<Trip> {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const trips = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, SEED_TRIPS);
-        const match = trips.find((t) => t.id === id);
-        if (match) {
-          resolve(match);
-        } else {
-          // Fallback to first trip if generic ID requested
-          resolve(trips[0]);
-        }
-      }, 100);
-    });
+    // For local IDs, skip backend
+    if (id.startsWith('local-')) {
+      const trips = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, []);
+      const found = trips.find((t) => t.id === id);
+      if (found) return found;
+      throw new Error(`Local trip ${id} not found`);
+    }
+
+    try {
+      const trip = await apiClient.get<Trip>(`/trips/${id}`);
+      const normalized = normalizeTrip(trip);
+      // Update in localStorage cache
+      const local = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, []);
+      const idx = local.findIndex(t => t.id === id);
+      if (idx !== -1) local[idx] = normalized;
+      else local.push(normalized);
+      storageService.setItem(TRIPS_STORE_KEY, local);
+      return normalized;
+    } catch {
+      const trips = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, []);
+      const found = trips.find((t) => t.id === id);
+      if (found) return found;
+      throw new Error(`Trip ${id} not found`);
+    }
   }
 
-  async createTrip(dto: CreateTripDTO, userId: string = 'usr-aarav-101'): Promise<Trip> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const trips = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, SEED_TRIPS);
+  async createTrip(dto: CreateTripDTO, _userId?: string): Promise<Trip> {
+    // Always try backend first
+    try {
+      const trip = await apiClient.post<Trip>('/trips', dto);
+      const normalized = normalizeTrip(trip);
+      
+      // Cache locally
+      const local = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, []);
+      storageService.setItem<Trip[]>(TRIPS_STORE_KEY, [normalized, ...local.filter(t => t.id !== normalized.id)]);
+      
+      return normalized;
+    } catch (err) {
+      // Offline fallback — create locally
+      console.warn('[TripService] Backend unavailable, creating trip locally');
+      const start = new Date(dto.startDate);
+      const end = new Date(dto.endDate);
+      const totalDays = isNaN(start.getTime()) || isNaN(end.getTime())
+        ? 7
+        : Math.max(1, Math.ceil((end.getTime() - start.getTime()) / 86400000) + 1);
 
-        const start = new Date(dto.startDate);
-        const end = new Date(dto.endDate);
-        const diffTime = Math.abs(end.getTime() - start.getTime());
-        const totalDays = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1);
+      const newTrip: Trip = {
+        id: 'local-' + Math.random().toString(36).substring(2, 9),
+        userId: 'local',
+        title: dto.title,
+        description: dto.description || '',
+        coverImage: dto.coverImage || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&h=500&q=80',
+        startDate: dto.startDate,
+        endDate: dto.endDate,
+        totalDays,
+        travelerCount: dto.travelerCount || 2,
+        travelerType: dto.travelerType || 'couple',
+        status: 'upcoming',
+        travelStyle: dto.travelStyle || 'comfort',
+        cities: dto.initialCity ? [{ 
+          id: 'c-' + Date.now(), 
+          cityName: dto.initialCity, 
+          country: '', 
+          daysAllocated: totalDays, 
+          order: 1 
+        }] : [],
+        hotels: [],
+        transport: [],
+        itinerary: [],
+        budget: {
+          targetBudget: dto.targetBudget || 0,
+          totalEstimatedCost: 0,
+          currency: dto.currency || 'INR',
+          status: 'healthy',
+          categories: { accommodation: 0, transport: 0, activities: 0, food: 0, other: 0 },
+        },
+        shareId: null as unknown as string | undefined,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      } as Trip;
 
-        const newTrip: Trip = {
-          id: 'trip-' + Math.random().toString(36).substring(2, 9),
-          userId,
-          title: dto.title,
-          description: dto.description || `Personalized trip to ${dto.initialCity || 'destinations'}`,
-          coverImage:
-            dto.coverImage ||
-            'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&h=500&q=80',
-          startDate: dto.startDate,
-          endDate: dto.endDate,
-          totalDays,
-          travelerCount: dto.travelerCount,
-          travelerType: dto.travelerType || 'couple',
-          status: 'upcoming',
-          travelStyle: dto.travelStyle || 'comfort',
-          cities: dto.initialCity
-            ? [
-                {
-                  id: 'city-' + Math.random().toString(36).substring(2, 7),
-                  cityName: dto.initialCity,
-                  country: 'Destination',
-                  daysAllocated: totalDays,
-                  order: 1,
-                },
-              ]
-            : [],
-          hotels: [],
-          transport: [],
-          itinerary: [],
-          budget: {
-            targetBudget: dto.targetBudget,
-            totalEstimatedCost: 0,
-            currency: dto.currency || 'INR',
-            status: 'healthy',
-            categories: {
-              accommodation: 0,
-              transport: 0,
-              activities: 0,
-              food: 0,
-              other: 0,
-            },
-          },
-          createdAt: new Date().toISOString().split('T')[0],
-          updatedAt: new Date().toISOString().split('T')[0],
-        };
-
-        const updated = [newTrip, ...trips];
-        storageService.setItem<Trip[]>(TRIPS_STORE_KEY, updated);
-        resolve(newTrip);
-      }, 150);
-    });
+      const local = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, []);
+      storageService.setItem<Trip[]>(TRIPS_STORE_KEY, [newTrip, ...local]);
+      return newTrip;
+    }
   }
 
   async updateTrip(id: string, updates: Partial<Trip>): Promise<Trip> {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const trips = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, SEED_TRIPS);
-        const index = trips.findIndex((t) => t.id === id);
-        if (index === -1) {
-          reject(new Error(`Trip with id "${id}" not found`));
-          return;
-        }
+    // For local trips, only update in localStorage
+    if (id.startsWith('local-')) {
+      const local = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, []);
+      const idx = local.findIndex((t) => t.id === id);
+      if (idx === -1) throw new Error('Trip not found');
+      local[idx] = { ...local[idx], ...updates, updatedAt: new Date().toISOString() };
+      storageService.setItem(TRIPS_STORE_KEY, local);
+      return local[idx];
+    }
 
-        const existing = trips[index];
-        const updatedTrip: Trip = {
-          ...existing,
-          ...updates,
-          updatedAt: new Date().toISOString().split('T')[0],
-        };
-
-        trips[index] = updatedTrip;
-        storageService.setItem<Trip[]>(TRIPS_STORE_KEY, trips);
-        resolve(updatedTrip);
-      }, 100);
-    });
+    try {
+      const updated = await apiClient.patch<Trip>(`/trips/${id}`, updates);
+      // Merge response with updates to preserve all fields
+      const merged = normalizeTrip({ ...updates, ...updated, id });
+      
+      const local = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, []);
+      const idx = local.findIndex((t) => t.id === id);
+      if (idx !== -1) {
+        local[idx] = { ...local[idx], ...merged };
+        storageService.setItem(TRIPS_STORE_KEY, local);
+      }
+      return merged;
+    } catch {
+      // Update locally only
+      const local = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, []);
+      const idx = local.findIndex((t) => t.id === id);
+      if (idx === -1) throw new Error('Trip not found');
+      local[idx] = { ...local[idx], ...updates, updatedAt: new Date().toISOString() };
+      storageService.setItem(TRIPS_STORE_KEY, local);
+      return local[idx];
+    }
   }
 
   async duplicateTrip(id: string): Promise<Trip> {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const trips = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, SEED_TRIPS);
-        const source = trips.find((t) => t.id === id);
-        if (!source) {
-          reject(new Error('Trip to duplicate not found'));
-          return;
-        }
-
-        const cloned: Trip = {
-          ...source,
-          id: 'trip-' + Math.random().toString(36).substring(2, 9),
-          title: `${source.title} (Copy)`,
-          status: 'draft',
-          createdAt: new Date().toISOString().split('T')[0],
-          updatedAt: new Date().toISOString().split('T')[0],
-        };
-
-        const updated = [cloned, ...trips];
-        storageService.setItem<Trip[]>(TRIPS_STORE_KEY, updated);
-        resolve(cloned);
-      }, 150);
-    });
+    const source = await this.getTripById(id);
+    return this.createTrip({
+      title: `${source.title} (Copy)`,
+      description: source.description,
+      startDate: source.startDate,
+      endDate: source.endDate,
+      travelerCount: source.travelerCount,
+      travelerType: source.travelerType,
+      targetBudget: source.budget?.targetBudget || 0,
+      travelStyle: source.travelStyle,
+      coverImage: source.coverImage,
+      currency: source.budget?.currency,
+    } as CreateTripDTO);
   }
 
   async deleteTrip(id: string): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const trips = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, SEED_TRIPS);
-        const filtered = trips.filter((t) => t.id !== id);
-        storageService.setItem<Trip[]>(TRIPS_STORE_KEY, filtered);
-        resolve();
-      }, 100);
-    });
+    if (!id.startsWith('local-')) {
+      try {
+        await apiClient.delete<void>(`/trips/${id}`);
+      } catch (err) {
+        console.warn('[TripService] Delete from backend failed, removing locally only');
+      }
+    }
+    const local = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, []);
+    storageService.setItem(TRIPS_STORE_KEY, local.filter((t) => t.id !== id));
   }
 }
 

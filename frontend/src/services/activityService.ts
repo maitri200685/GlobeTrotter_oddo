@@ -1,4 +1,6 @@
-import type { Activity, ActivityFilterParams } from '@/types/inventory.types';
+import { apiClient } from '../lib/apiClient';
+import { storageService } from './storageService';
+import type { Activity, ActivityFilterParams, ActivityCategory } from '@/types/inventory.types';
 
 const SEED_ACTIVITIES: Activity[] = [
   // GOA ACTIVITIES
@@ -183,66 +185,100 @@ const SEED_ACTIVITIES: Activity[] = [
   },
 ];
 
+/** Normalise a backend activity to the Activity shape our UI expects */
+function normalizeActivity(a: any): Activity {
+  const seed = SEED_ACTIVITIES.find(s => s.title.toLowerCase() === a.name?.toLowerCase() || s.id === a.id);
+  return {
+    id: a.id,
+    title: a.title || a.name,
+    cityName: a.cityName || a.cities?.name || '',
+    country: a.country || a.cities?.country || '',
+    category: (a.category || 'other') as ActivityCategory,
+    estimatedCost: a.estimatedCost || a.estimated_cost || 0,
+    currency: a.currency || 'INR',
+    durationMinutes: a.durationMinutes || a.duration_minutes || 120,
+    duration: a.duration || (a.duration_minutes ? `${Math.round(a.duration_minutes / 60)} hours` : '2 hours'),
+    description: a.description || '',
+    coverImage: a.coverImage || (a.images && a.images[0]) || a.image_url || seed?.coverImage || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80',
+    images: a.images || [a.image_url || ''],
+    rating: a.rating || seed?.rating || 4.5,
+    reviewsCount: a.reviewsCount || 0,
+    suggestedTime: a.suggestedTime || seed?.suggestedTime || '09:00',
+    recommendedTimeSlot: a.recommendedTimeSlot || seed?.recommendedTimeSlot || 'morning',
+    location: a.location || seed?.location || a.cityName || '',
+    tags: a.tags || seed?.tags || [],
+    highlights: a.highlights || seed?.highlights || [],
+  };
+}
+
 class ActivityService {
-  async getActivitiesByCity(cityName?: string, filters?: ActivityFilterParams): Promise<Activity[]> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        let results = [...SEED_ACTIVITIES];
-
-        if (cityName && cityName.trim()) {
-          const q = cityName.toLowerCase().trim();
-          results = results.filter(
-            (a) =>
-              a.cityName.toLowerCase().includes(q) ||
-              q.includes(a.cityName.toLowerCase())
-          );
-        }
-
-        if (filters?.category && filters.category !== 'all') {
-          results = results.filter((a) => a.category === filters.category);
-        }
-
-        if (filters?.timeSlot && filters.timeSlot !== 'all') {
-          results = results.filter((a) => a.recommendedTimeSlot === filters.timeSlot);
-        }
-
-        if (filters?.maxCost) {
-          results = results.filter((a) => a.estimatedCost <= (filters.maxCost || Infinity));
-        }
-
-        if (filters?.searchQuery && filters.searchQuery.trim()) {
-          const q = filters.searchQuery.toLowerCase().trim();
-          results = results.filter(
-            (a) =>
-              a.title.toLowerCase().includes(q) ||
-              a.description.toLowerCase().includes(q) ||
-              a.location.toLowerCase().includes(q) ||
-              a.tags.some((t) => t.toLowerCase().includes(q))
-          );
-        }
-
-        // Sorting
-        if (filters?.sortBy === 'costAsc') {
-          results.sort((a, b) => a.estimatedCost - b.estimatedCost);
-        } else if (filters?.sortBy === 'costDesc') {
-          results.sort((a, b) => b.estimatedCost - a.estimatedCost);
-        } else {
-          // Default by rating
-          results.sort((a, b) => b.rating - a.rating);
-        }
-
-        resolve(results);
-      }, 100);
-    });
+  /** Called by TripActivitiesPage with cityName (not cityId) */
+  async getActivitiesByCity(cityNameOrId: string, filters?: ActivityFilterParams): Promise<Activity[]> {
+    try {
+      const data = await apiClient.get<Activity[]>(`/activities?city_name=${encodeURIComponent(cityNameOrId)}`);
+      if (data && data.length > 0) {
+        const normalized = data.map(normalizeActivity);
+        return this._applyFilters(normalized, filters);
+      }
+    } catch {}
+    // Fallback to seed data filtered by city name
+    const name = cityNameOrId.toLowerCase();
+    const seedFiltered = SEED_ACTIVITIES.filter(a =>
+      a.cityName.toLowerCase() === name ||
+      a.cityName.toLowerCase().includes(name) ||
+      name.includes(a.cityName.toLowerCase())
+    );
+    return this._applyFilters(seedFiltered.length > 0 ? seedFiltered : SEED_ACTIVITIES, filters);
   }
 
-  async getActivityById(id: string): Promise<Activity | null> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const found = SEED_ACTIVITIES.find((a) => a.id === id);
-        resolve(found || null);
-      }, 50);
-    });
+  async getActivities(filters?: ActivityFilterParams): Promise<Activity[]> {
+    try {
+      const data = await apiClient.get<Activity[]>('/activities');
+      if (data && data.length > 0) return this._applyFilters(data.map(normalizeActivity), filters);
+      return this._applyFilters(SEED_ACTIVITIES, filters);
+    } catch {
+      return this._applyFilters(SEED_ACTIVITIES, filters);
+    }
+  }
+
+  private _applyFilters(activities: Activity[], filters?: ActivityFilterParams): Activity[] {
+    let result = [...activities];
+    if (filters?.category && filters.category !== 'all') {
+      result = result.filter(a => a.category === filters.category);
+    }
+    if (filters?.maxCost) result = result.filter(a => a.estimatedCost <= filters.maxCost!);
+    if (filters?.searchQuery?.trim()) {
+      const q = filters.searchQuery.toLowerCase();
+      result = result.filter(a =>
+        a.title?.toLowerCase().includes(q) ||
+        a.cityName?.toLowerCase().includes(q) ||
+        a.description?.toLowerCase().includes(q)
+      );
+    }
+    if (filters?.sortBy === 'rating') result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    if (filters?.sortBy === 'costAsc') result.sort((a, b) => a.estimatedCost - b.estimatedCost);
+    if (filters?.sortBy === 'costDesc') result.sort((a, b) => b.estimatedCost - a.estimatedCost);
+    return result;
+  }
+
+  async getActivityById(id: string): Promise<Activity | undefined> {
+    try {
+      const activities = await apiClient.get<Activity[]>('/activities');
+      const found = activities.find(a => a.id === id);
+      if (found) return normalizeActivity(found);
+    } catch {}
+    return SEED_ACTIVITIES.find(a => a.id === id);
+  }
+
+  async searchActivities(query: string, cityName?: string): Promise<Activity[]> {
+    const lowerQuery = query.toLowerCase();
+    let results = SEED_ACTIVITIES.filter(a =>
+      a.title.toLowerCase().includes(lowerQuery) ||
+      a.category.toLowerCase().includes(lowerQuery) ||
+      a.cityName.toLowerCase().includes(lowerQuery)
+    );
+    if (cityName) results = results.filter(a => a.cityName.toLowerCase().includes(cityName.toLowerCase()));
+    return results;
   }
 }
 

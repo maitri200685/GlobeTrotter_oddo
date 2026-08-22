@@ -85,14 +85,13 @@ class AuthService {
   }
 
   async updateProfile(updates: Partial<User>): Promise<User> {
-    // Would normally call PATCH /api/v1/profiles/me
+    // Left as mock if backend doesn't have it yet, or add endpoint. 
     console.warn('updateProfile not implemented in backend yet');
     return this.getCurrentUser() as Promise<User>;
   }
 
   async updatePreferences(newPrefs: Partial<TravelPreferences>): Promise<User> {
-    // Would normally call PATCH /api/v1/profiles/me/preferences
-    console.warn('updatePreferences not implemented in backend yet');
+    await apiClient.patch<void>('/users/me/preferences', newPrefs);
     return this.getCurrentUser() as Promise<User>;
   }
 

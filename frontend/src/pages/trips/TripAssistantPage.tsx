@@ -22,10 +22,11 @@ import { Badge } from '@/components/ui/Badge';
 import { useTrip } from '@/context/TripContext';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
+import { aiService } from '@/services/aiService';
 
 interface AISuggestion {
   id: string;
-  type: 'swap_hotel' | 'remove_activity' | 'add_activity' | 'reschedule' | 'budget_cut';
+  type: 'swap_hotel' | 'remove_activity' | 'add_activity' | 'reschedule' | 'budget_cut' | 'upgrade';
   title: string;
   description: string;
   budgetImpact: number; // negative = saves money, positive = adds cost
@@ -81,108 +82,6 @@ export const TripAssistantPage: React.FC = () => {
 
   if (!currentTrip) return null;
 
-  const generateSuggestions = (query: string): AISuggestion[] => {
-    const isAboutCost = query.toLowerCase().includes('cheap') || query.toLowerCase().includes('cost') || query.toLowerCase().includes('budget');
-    const isAboutRelax = query.toLowerCase().includes('relax') || query.toLowerCase().includes('rest');
-    const isAboutFood = query.toLowerCase().includes('food') || query.toLowerCase().includes('restaurant');
-    const isAboutStay = query.toLowerCase().includes('hotel') || query.toLowerCase().includes('stay') || query.toLowerCase().includes('upgrade');
-
-    if (isAboutCost) {
-      return [
-        {
-          id: 'sug-1',
-          type: 'swap_hotel',
-          title: 'Switch to a 3★ Boutique Stay',
-          description: 'Swap your current hotel to a well-rated 3-star guesthouse. Same location, great reviews, much lower price.',
-          budgetImpact: -4200,
-          currency: currentTrip.budget.currency,
-          applied: false,
-          dismissed: false,
-        },
-        {
-          id: 'sug-2',
-          type: 'remove_activity',
-          title: 'Remove Overpriced Guided Tour',
-          description: 'The private guided tour on Day 2 can be done independently for free using audio guides.',
-          budgetImpact: -2800,
-          currency: currentTrip.budget.currency,
-          applied: false,
-          dismissed: false,
-        },
-      ];
-    }
-
-    if (isAboutRelax) {
-      return [
-        {
-          id: 'sug-3',
-          type: 'reschedule',
-          title: 'Convert Day 3 to Free Time',
-          description: 'Remove all scheduled activities from Day 3 and add a "Leisure & Exploration" block instead.',
-          budgetImpact: -1500,
-          currency: currentTrip.budget.currency,
-          applied: false,
-          dismissed: false,
-        },
-      ];
-    }
-
-    if (isAboutFood) {
-      return [
-        {
-          id: 'sug-4',
-          type: 'add_activity',
-          title: 'Add Sunset Seafood Dinner (Day 2, 19:00)',
-          description: 'Top-rated beachside seafood restaurant. 4.8★ on Google. Advance booking recommended.',
-          budgetImpact: 1800,
-          currency: currentTrip.budget.currency,
-          applied: false,
-          dismissed: false,
-        },
-        {
-          id: 'sug-5',
-          type: 'add_activity',
-          title: 'Local Street Food Walk (Day 1, 12:00)',
-          description: 'Guided local street food experience covering 8 signature dishes. Best value food tour in the city.',
-          budgetImpact: 800,
-          currency: currentTrip.budget.currency,
-          applied: false,
-          dismissed: false,
-        },
-      ];
-    }
-
-    return [
-      {
-        id: 'sug-6',
-        type: 'budget_cut',
-        title: 'Optimize Transport Costs',
-        description: 'Taking local transport instead of private cabs between 3 stops can save significant money.',
-        budgetImpact: -3200,
-        currency: currentTrip.budget.currency,
-        applied: false,
-        dismissed: false,
-      },
-    ];
-  };
-
-  const generateAIResponse = (query: string): string => {
-    const lower = query.toLowerCase();
-    if (lower.includes('cheap') || lower.includes('cost') || lower.includes('budget')) {
-      return `Great question! I've analyzed your **${currentTrip.title}** budget and found **2 key optimizations** that can save you up to ₹7,000 without compromising on experience. Here are my recommendations:`;
-    }
-    if (lower.includes('relax') || lower.includes('rest')) {
-      return `I can definitely help you build in more downtime! Looking at your Day 3, I suggest removing the packed morning schedule and replacing it with a **free leisure block**. This will save some budget too!`;
-    }
-    if (lower.includes('food') || lower.includes('restaurant')) {
-      return `Your trip is missing some amazing culinary experiences! I've found **2 must-visit food spots** in ${currentTrip.cities[0]?.cityName || 'your destination'} that perfectly match your vibe and budget. Check them out:`;
-    }
-    if (lower.includes('hotel') || lower.includes('stay') || lower.includes('upgrade')) {
-      return `I've reviewed the hotel options for your trip. Based on your travel style and remaining budget, here's what I recommend for your stays:`;
-    }
-    return `That's a great question about your **${currentTrip.title}** trip! Based on your current itinerary, here's what I suggest to make it even better:`;
-  };
-
   const handleSend = async (query?: string) => {
     const text = query || inputText.trim();
     if (!text) return;
@@ -191,22 +90,35 @@ export const TripAssistantPage: React.FC = () => {
     setMessages((prev) => [...prev, { id: Math.random().toString(36).substring(2), role: 'user', text }]);
     setIsThinking(true);
 
-    await new Promise((res) => setTimeout(res, 1200));
+    try {
+      const response = await aiService.getAssistantSuggestions({
+        tripId: currentTrip.id,
+        query: text,
+      });
 
-    const suggestions = generateSuggestions(text);
-    const aiText = generateAIResponse(text);
-
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Math.random().toString(36).substring(2),
-        role: 'ai',
-        text: aiText,
-        suggestions: suggestions.length > 0 ? suggestions : undefined,
-      },
-    ]);
-
-    setIsThinking(false);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Math.random().toString(36).substring(2),
+          role: 'ai',
+          text: response.message,
+          suggestions: response.suggestions?.length 
+            ? response.suggestions.map(s => ({ ...s, applied: false, dismissed: false })) 
+            : undefined,
+        },
+      ]);
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Math.random().toString(36).substring(2),
+          role: 'ai',
+          text: 'Oops, I encountered an error while trying to process that. Please try again.',
+        },
+      ]);
+    } finally {
+      setIsThinking(false);
+    }
   };
 
   const handleApplySuggestion = async (suggestion: AISuggestion) => {

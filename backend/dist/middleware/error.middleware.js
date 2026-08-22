@@ -1,10 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.errorHandler = void 0;
+const zod_1 = require("zod");
 const errors_1 = require("../utils/errors");
 const response_1 = require("../utils/response");
 const logger_1 = require("../utils/logger");
 const errorHandler = (err, req, res, next) => {
+    if (err instanceof zod_1.z.ZodError) {
+        return res.status(400).json((0, response_1.sendError)('VALIDATION_ERROR', 'Invalid input data', err.errors));
+    }
     if (err instanceof errors_1.AppError) {
         logger_1.logger.warn({ err, reqId: req.reqId }, `AppError: ${err.message}`);
         return res.status(err.statusCode).json((0, response_1.sendError)(err.code, err.message, err.details));

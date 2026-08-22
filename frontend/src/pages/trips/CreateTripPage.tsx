@@ -47,8 +47,8 @@ export const CreateTripPage: React.FC = () => {
     { name: 'Jaipur Hawa Mahal', url: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=800&h=500&q=80' },
     { name: 'Kerala Backwaters', url: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&h=500&q=80' },
     { name: 'Manali Mountains', url: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&h=500&q=80' },
-    { name: 'Kyoto Shinto Shrine', url: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&h=500&q=80' },
-    { name: 'Paris Eiffel Tower', url: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&h=500&q=80' },
+    { name: 'Varanasi Ghats', url: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&h=500&q=80' },
+    { name: 'Udaipur Lake Palace', url: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&h=500&q=80' },
   ];
 
   const [selectedCoverImage, setSelectedCoverImage] = useState(presetCoverPhotos[0].url);

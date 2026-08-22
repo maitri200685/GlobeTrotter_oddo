@@ -53,31 +53,31 @@ const COMMUNITY_ITINERARIES = [
   },
   {
     id: 'ci-3',
-    title: 'Kyoto Sakura Temple Walk',
-    author: 'Elena Rostova',
-    authorAvatar: 'ER',
-    days: 6,
-    budget: '$1,400',
-    cities: ['Kyoto', 'Osaka'],
-    vibe: 'Culture & Zen',
-    rating: 5.0,
-    clones: 589,
-    coverImage: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&q=80',
-    tags: ['Culture', 'Solo', 'Photography'],
+    title: 'Spiritual Varanasi & Sarnath Trail',
+    author: 'Ananya Kapoor',
+    authorAvatar: 'AK',
+    days: 4,
+    budget: '₹18,500',
+    cities: ['Varanasi', 'Sarnath'],
+    vibe: 'Spiritual & Heritage',
+    rating: 4.9,
+    clones: 298,
+    coverImage: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=600&q=80',
+    tags: ['Spiritual', 'Solo', 'Photography'],
   },
   {
     id: 'ci-4',
-    title: 'Parisian Art & Gastronomy Week',
-    author: 'Lucas Bernard',
-    authorAvatar: 'LB',
-    days: 7,
-    budget: '€1,800',
-    cities: ['Paris'],
-    vibe: 'Art & Food',
-    rating: 4.7,
-    clones: 178,
-    coverImage: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80',
-    tags: ['Art', 'Food', 'Couple'],
+    title: 'Ladakh High Pass Adventure',
+    author: 'Rohan Singh',
+    authorAvatar: 'RS',
+    days: 9,
+    budget: '₹85,000',
+    cities: ['Leh', 'Nubra', 'Pangong'],
+    vibe: 'Mountains & Adventure',
+    rating: 5.0,
+    clones: 456,
+    coverImage: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=600&q=80',
+    tags: ['Adventure', 'Bike', 'Mountains'],
   },
   {
     id: 'ci-5',
@@ -95,26 +95,26 @@ const COMMUNITY_ITINERARIES = [
   },
   {
     id: 'ci-6',
-    title: 'Bali Digital Nomad Month',
-    author: 'Jake Reynolds',
-    authorAvatar: 'JR',
-    days: 30,
-    budget: '$2,200',
-    cities: ['Bali', 'Canggu', 'Ubud'],
-    vibe: 'Work & Explore',
-    rating: 4.6,
-    clones: 267,
-    coverImage: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80',
-    tags: ['Nomad', 'Solo', 'Long Stay'],
+    title: 'Andaman Islands Beach Retreat',
+    author: 'Neha Patel',
+    authorAvatar: 'NP',
+    days: 8,
+    budget: '₹62,000',
+    cities: ['Port Blair', 'Havelock', 'Neil'],
+    vibe: 'Beaches & Scuba',
+    rating: 4.8,
+    clones: 321,
+    coverImage: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=600&q=80',
+    tags: ['Beach', 'Scuba', 'Honeymoon'],
   },
 ];
 
 const DESTINATION_HIGHLIGHTS = [
   { name: 'Goa', country: 'India', flag: '🇮🇳', temp: '28°C', dailyCost: '₹2,500', type: '🏖️ Beaches', guides: 24 },
   { name: 'Jaipur', country: 'India', flag: '🇮🇳', temp: '22°C', dailyCost: '₹3,200', type: '🏰 Heritage', guides: 18 },
-  { name: 'Kyoto', country: 'Japan', flag: '🇯🇵', temp: '15°C', dailyCost: '$120', type: '⛩️ Culture', guides: 31 },
-  { name: 'Paris', country: 'France', flag: '🇫🇷', temp: '12°C', dailyCost: '€180', type: '🎨 Arts', guides: 42 },
-  { name: 'Bali', country: 'Indonesia', flag: '🇮🇩', temp: '30°C', dailyCost: '$60', type: '🌿 Nature', guides: 28 },
+  { name: 'Kerala', country: 'India', flag: '🇮🇳', temp: '24°C', dailyCost: '₹3,500', type: '🌿 Backwaters', guides: 31 },
+  { name: 'Ladakh', country: 'India', flag: '🇮🇳', temp: '8°C', dailyCost: '₹5,000', type: '🏔️ Mountains', guides: 22 },
+  { name: 'Varanasi', country: 'India', flag: '🇮🇳', temp: '23°C', dailyCost: '₹2,200', type: '🕉️ Spiritual', guides: 28 },
 ];
 
 const VIBE_FILTERS = ['All', 'Beaches', 'Heritage', 'Mountains', 'Food', 'Adventure', 'Wellness', 'Budget'];
@@ -146,7 +146,8 @@ export const ExplorePage: React.FC = () => {
 
       {/* HERO BANNER */}
       <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-teal-900 to-slate-900 p-8 sm:p-12 text-white">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#14B8A6_1px,transparent_1px)] [background-size:24px_24px]" />
+        <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(20,184,166,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(20,184,166,0.08)_1px,transparent_1px)] [background-size:32px_32px]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
         <div className="relative z-10 max-w-xl">
           <Badge variant="ai" size="xs" className="mb-3">Community Itineraries</Badge>
           <h1 className="text-2xl sm:text-4xl font-extrabold font-display mb-3 leading-tight">

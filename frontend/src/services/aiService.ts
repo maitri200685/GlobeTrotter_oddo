@@ -124,7 +124,7 @@ class AIService {
           title: 'Switch to 3★ Boutique Stay',
           description: 'Swap to a highly-rated 3-star property. Same location, 35% cheaper, excellent reviews.',
           budgetImpact: -4200,
-          currency: request.context?.currentBudget ? 'INR' : 'USD',
+          currency: 'INR',
           category: 'savings',
           priority: 'high',
         },

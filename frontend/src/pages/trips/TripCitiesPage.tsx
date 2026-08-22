@@ -272,7 +272,7 @@ export const TripCitiesPage: React.FC = () => {
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Search world destinations (Mumbai, Paris, Kyoto, Bali...)"
+                placeholder="Search Indian destinations (Mumbai, Jaipur, Kerala, Ladakh...)"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-white text-xs sm:text-sm text-slate-800 rounded-2xl pl-10 pr-4 py-2.5 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-terracotta-200 focus:border-terracotta-500 transition-all placeholder:text-slate-400 shadow-2xs"
@@ -281,7 +281,7 @@ export const TripCitiesPage: React.FC = () => {
 
             {/* Region Filter Chips */}
             <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-thin pb-1">
-              {['All', 'India', 'East Asia', 'Southeast Asia', 'Europe'].map((r) => (
+              {['All', 'North India', 'South India', 'West India', 'East India', 'Himalayas', 'Islands'].map((r) => (
                 <button
                   key={r}
                   type="button"

@@ -19,11 +19,11 @@ import { useAuth } from '@/context/AuthContext';
 
 const heroSlides = [
   {
-    id: 'paris',
-    name: 'Paris',
-    country: 'France',
+    id: 'varanasi',
+    name: 'Varanasi',
+    country: 'India',
     image:
-      'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1920&q=85',
+      'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=1920&q=85',
   },
   {
     id: 'jaipur',
@@ -33,18 +33,18 @@ const heroSlides = [
       'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1920&q=85',
   },
   {
-    id: 'swiss-alps',
-    name: 'Swiss Alps',
-    country: 'Switzerland',
+    id: 'kerala',
+    name: 'Kerala Backwaters',
+    country: 'India',
     image:
-      'https://images.unsplash.com/photo-1531210483974-4f8c1f33fd35?auto=format&fit=crop&w=1920&q=85',
+      'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=1920&q=85',
   },
   {
-    id: 'bali',
-    name: 'Bali',
-    country: 'Indonesia',
+    id: 'ladakh',
+    name: 'Ladakh',
+    country: 'India',
     image:
-      'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=85',
+      'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1920&q=85',
   },
 ];
 
@@ -52,9 +52,9 @@ const testimonials = [
   {
     id: 1,
     name: 'Priya Sharma',
-    context: 'Traveling across Italy',
+    context: 'Kerala Backwaters & Tea Hills',
     stars: 5,
-    text: 'Planning our Italy trip used to mean spreadsheets, tabs and endless notes. GlobeTrotter gave us one clear itinerary and made the whole process so much easier.',
+    text: 'Planning our Kerala trip used to mean spreadsheets, tabs and endless notes. GlobeTrotter gave us one clear itinerary and made the whole process so much easier.',
     avatar:
       'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80',
   },
@@ -69,17 +69,17 @@ const testimonials = [
   },
   {
     id: 3,
-    name: 'Elena Rostova',
-    context: 'Kyoto & Tokyo in 12 days',
+    name: 'Ananya Kapoor',
+    context: 'Kashmir & Ladakh in 12 days',
     stars: 5,
-    text: 'The day-by-day timeline view is the best feature. Seeing my full Japan trip across one calendar gave me total confidence. Nothing was missed.',
+    text: 'The day-by-day timeline view is the best feature. Seeing my full Kashmir-Ladakh trip across one calendar gave me total confidence. Nothing was missed.',
     avatar:
       'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=80&h=80&q=80',
   },
   {
     id: 4,
-    name: 'Marcus & Leila',
-    context: 'Honeymoon in Bali & Singapore',
+    name: 'Rahul & Sneha',
+    context: 'Honeymoon in Andaman & Goa',
     stars: 5,
     text: 'We planned our entire honeymoon in an afternoon. Hotels, activities, transport — all in one place. No more switching between fifteen browser tabs.',
     avatar:
@@ -89,85 +89,85 @@ const testimonials = [
 
 const featuredDestinations = [
   {
-    id: 'paris',
-    name: 'Paris',
-    country: 'France',
+    id: 'goa',
+    name: 'Goa',
+    country: 'India',
     image:
-      'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&h=400&q=80',
-    tagline: 'World-class art, historic boulevards & gastronomy',
+      'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&h=400&q=80',
+    tagline: 'Golden beaches, Portuguese heritage & vibrant nightlife',
   },
   {
-    id: 'bali',
-    name: 'Bali',
-    country: 'Indonesia',
+    id: 'udaipur',
+    name: 'Udaipur',
+    country: 'India',
     image:
-      'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&h=400&q=80',
-    tagline: 'Spiritual temples, emerald rice terraces & surf coastlines',
+      'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&h=400&q=80',
+    tagline: 'Romantic lake palaces, heritage havelis & rooftop dining',
   },
   {
-    id: 'kyoto',
-    name: 'Kyoto',
-    country: 'Japan',
+    id: 'varanasi',
+    name: 'Varanasi',
+    country: 'India',
     image:
-      'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=600&h=400&q=80',
-    tagline: 'Ancient shrines, bamboo groves & traditional tea culture',
+      'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=600&h=400&q=80',
+    tagline: 'Sacred ghats, Ganga aarti & ancient spiritual culture',
   },
   {
-    id: 'swiss-alps',
-    name: 'Swiss Alps',
-    country: 'Switzerland',
+    id: 'ladakh',
+    name: 'Ladakh',
+    country: 'India',
     image:
-      'https://images.unsplash.com/photo-1531210483974-4f8c1f33fd35?auto=format&fit=crop&w=600&h=400&q=80',
-    tagline: 'Snow-capped peaks, alpine villages & pristine lakes',
+      'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=600&h=400&q=80',
+    tagline: 'High-altitude monasteries, turquoise lakes & Himalayan passes',
   },
   {
-    id: 'santorini',
-    name: 'Santorini',
-    country: 'Greece',
+    id: 'andaman',
+    name: 'Andaman & Nicobar',
+    country: 'India',
     image:
-      'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=600&h=400&q=80',
-    tagline: 'Clifftop views, blue-domed villages & island sunsets',
+      'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&w=600&h=400&q=80',
+    tagline: 'Pristine coral reefs, crystal lagoons & bioluminescent beaches',
   },
   {
-    id: 'dubai',
-    name: 'Dubai',
-    country: 'UAE',
+    id: 'amritsar',
+    name: 'Amritsar',
+    country: 'India',
     image:
-      'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&h=400&q=80',
-    tagline: 'Futuristic skyline, desert dunes & luxury experiences',
+      'https://images.unsplash.com/photo-1514222134-b57cbb8ce073?auto=format&fit=crop&w=600&h=400&q=80',
+    tagline: 'Golden Temple, Wagah Border & Punjabi hospitality',
   },
 ];
 
 const communityTrips = [
   {
     id: 1,
-    title: '7 Days in Japan',
-    destinations: ['Tokyo', 'Kyoto', 'Osaka'],
+    title: '7 Days in Kerala',
+    destinations: ['Munnar', 'Alleppey', 'Kovalam'],
     duration: '7 days',
     stops: 3,
-    budget: '$2,100',
+    budget: '₹42,500',
     image:
-      'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=500&h=280&q=80',
+      'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=500&h=280&q=80',
   },
   {
     id: 2,
-    title: 'Weekend in Paris',
-    destinations: ['Paris'],
+    title: 'Weekend in Udaipur',
+    destinations: ['Udaipur'],
     duration: '3 days',
     stops: 1,
-    budget: '$850',
+    budget: '₹14,999',
     image:
-      'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=500&h=280&q=80',
+      'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=500&h=280&q=80',
   },
   {
     id: 3,
-    title: '10 Days Across Italy',
-    destinations: ['Rome', 'Florence', 'Venice'],
+    title: '10 Days Across Rajasthan',
+    destinations: ['Jaipur', 'Jodhpur', 'Jaisalmer'],
     duration: '10 days',
     stops: 3,
-    budget: '$2,400',
+    budget: '₹78,500',
     image:
-      'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&w=500&h=280&q=80',
+      'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=500&h=280&q=80',
   },
 ];
 
@@ -297,27 +297,6 @@ export const LandingPage: React.FC = () => {
                 Explore Trips
               </button>
             </div>
-
-            {/* Destination indicators */}
-            <div className="hero-indicators flex items-center gap-2 flex-wrap">
-              {heroSlides.map((slide, i) => (
-                <button
-                  key={slide.id}
-                  id={`hero-indicator-${slide.id}`}
-                  onClick={() => goToSlide(i)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 cursor-pointer ${
-                    i === activeSlide
-                      ? 'bg-white text-slate-900 shadow-md'
-                      : 'bg-white/15 text-white/80 hover:bg-white/25 border border-white/20'
-                  }`}
-                  aria-label={`View ${slide.name}, ${slide.country}`}
-                  aria-pressed={i === activeSlide}
-                >
-                  <MapPin className="w-3 h-3 shrink-0" />
-                  {slide.name}
-                </button>
-              ))}
-            </div>
           </div>
         </div>
       </section>
@@ -442,114 +421,6 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ══════════════════════════════════════════
-          4. AI PLANNER PREVIEW
-      ══════════════════════════════════════════ */}
-      <section id="ai-planner-preview" className="lp-reveal py-20 sm:py-28 bg-white">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-
-            {/* Left: Copy */}
-            <div className="space-y-6">
-              <p className="text-xs font-bold tracking-widest uppercase text-terracotta-500">
-                AI Travel Planner
-              </p>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-display leading-tight">
-                Tell us what kind of trip you're dreaming about.
-              </h2>
-              <p className="text-slate-500 leading-relaxed text-sm sm:text-base">
-                Share your destination, dates, budget and travel style. GlobeTrotter turns
-                your ideas into a complete, ready-to-follow journey.
-              </p>
-
-              <div className="bg-[#FAF9F6] rounded-2xl p-5 border border-slate-200">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-                  Example prompt
-                </p>
-                <p className="text-sm text-slate-700 italic leading-relaxed">
-                  "I have 7 days in Italy. I want Rome, Florence and Venice — good food,
-                  comfortable hotels and a moderate budget."
-                </p>
-              </div>
-
-              <button
-                id="ai-planner-build-trip-btn"
-                onClick={() => navigate('/plan')}
-                className="inline-flex items-center gap-2 bg-terracotta-500 hover:bg-terracotta-600 text-white px-8 py-4 rounded-full text-sm font-bold shadow-md transition-all duration-200 hover:scale-105"
-              >
-                Build My Trip
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Right: Mock itinerary */}
-            <div className="bg-[#FAF9F6] rounded-3xl border border-slate-200 p-6 space-y-4 shadow-sm">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Your Italy Trip</p>
-                  <p className="text-lg font-extrabold text-slate-900 font-display">7 Days · 3 Cities</p>
-                </div>
-                <span className="bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1.5 rounded-full border border-emerald-200">
-                  €2,100 est.
-                </span>
-              </div>
-
-              {/* Route */}
-              <div className="flex items-center gap-2 flex-wrap text-sm font-semibold text-slate-700">
-                {(['Rome', 'Florence', 'Venice'] as const).map((city, i) => (
-                  <React.Fragment key={city}>
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-terracotta-500" />
-                      {city}
-                    </span>
-                    {i < 2 && <ArrowRight className="w-3 h-3 text-slate-300" />}
-                  </React.Fragment>
-                ))}
-              </div>
-
-              {/* Summary cards */}
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { label: 'Hotel', value: 'Boutique 4★', sub: '€140/night', colorClass: 'text-amber-600' },
-                  { label: 'Activities', value: '14 curated', sub: 'per city', colorClass: 'text-teal-600' },
-                  { label: 'Transport', value: 'Train passes', sub: 'Rome → Venice', colorClass: 'text-sky-600' },
-                  { label: 'Budget', value: '€300/day', sub: 'est. total', colorClass: 'text-terracotta-600' },
-                ].map(({ label, value, sub, colorClass }) => (
-                  <div key={label} className="bg-white rounded-xl p-3.5 border border-slate-100">
-                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">{label}</p>
-                    <p className={`text-sm font-bold ${colorClass}`}>{value}</p>
-                    <p className="text-[11px] text-slate-400">{sub}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Day 1 mini timeline */}
-              <div className="bg-white rounded-xl border border-slate-100 p-4">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-3">
-                  Day 1 · Rome
-                </p>
-                <div className="space-y-2.5">
-                  {[
-                    { time: '09:00', act: 'Colosseum & Roman Forum' },
-                    { time: '13:00', act: 'Lunch — Trastevere' },
-                    { time: '15:30', act: 'Vatican Museums' },
-                    { time: '19:30', act: 'Dinner — Piazza Navona' },
-                  ].map(({ time, act }) => (
-                    <div key={time} className="flex items-center gap-3">
-                      <span className="text-[10px] font-bold text-slate-400 w-10 shrink-0">{time}</span>
-                      <div className="flex items-center gap-2 flex-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-terracotta-400 shrink-0" />
-                        <span className="text-xs text-slate-700">{act}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════
           5. FEATURED DESTINATIONS
       ══════════════════════════════════════════ */}
       <section id="featured-destinations" className="lp-reveal py-20 sm:py-28 bg-[#FAF9F6]">
@@ -648,7 +519,7 @@ export const LandingPage: React.FC = () => {
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Day 1 of 7</p>
-                  <p className="text-lg font-extrabold text-slate-900 font-display">Rome, Italy</p>
+                  <p className="text-lg font-extrabold text-slate-900 font-display">Jaipur, Rajasthan</p>
                 </div>
                 <span className="text-xs text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-full">
                   Monday, Oct 14
@@ -656,11 +527,11 @@ export const LandingPage: React.FC = () => {
               </div>
               <div className="space-y-3">
                 {[
-                  { time: '09:00', title: 'Colosseum', type: 'Activity', cost: '€18', icon: '🏛️' },
-                  { time: '12:30', title: 'Lunch at Roscioli', type: 'Food & Drink', cost: '€32', icon: '🍝' },
-                  { time: '14:30', title: 'Check in — Hotel de Russie', type: 'Hotel', cost: '€185', icon: '🏨' },
-                  { time: '17:00', title: 'Roman Forum walk', type: 'Activity', cost: 'Free', icon: '🏛️' },
-                  { time: '19:30', title: 'Dinner near Pantheon', type: 'Food & Drink', cost: '€55', icon: '🍽️' },
+                  { time: '09:00', title: 'Amber Fort Tour', type: 'Activity', cost: '₹250', icon: '🏰' },
+                  { time: '12:30', title: 'Lunch at Peacock Rooftop', type: 'Food & Drink', cost: '₹1,800', icon: '🍛' },
+                  { time: '14:30', title: 'Check in — Umaid Bhawan Heritage', type: 'Hotel', cost: '₹4,800', icon: '🏨' },
+                  { time: '17:00', title: 'Hawa Mahal Sunset Walk', type: 'Activity', cost: 'Free', icon: '🕌' },
+                  { time: '19:30', title: 'Dinner at Chokhi Dhani Village', type: 'Food & Drink', cost: '₹2,200', icon: '🍽️' },
                 ].map(({ time, title, type, cost, icon }) => (
                   <div key={time} className="flex items-start gap-4">
                     <div className="w-12 shrink-0 text-right">
@@ -687,10 +558,10 @@ export const LandingPage: React.FC = () => {
                 </p>
                 <div className="space-y-3">
                   {[
-                    { label: 'Hotel', amount: '€185', pct: 62 },
-                    { label: 'Activities', amount: '€18', pct: 6 },
-                    { label: 'Food & Drink', amount: '€87', pct: 29 },
-                    { label: 'Transport', amount: '€10', pct: 3 },
+                    { label: 'Hotel', amount: '₹4,800', pct: 53 },
+                    { label: 'Activities', amount: '₹250', pct: 3 },
+                    { label: 'Food & Drink', amount: '₹4,000', pct: 44 },
+                    { label: 'Transport', amount: '₹0', pct: 0 },
                   ].map(({ label, amount, pct }) => (
                     <div key={label}>
                       <div className="flex items-center justify-between text-xs mb-1">
@@ -708,7 +579,7 @@ export const LandingPage: React.FC = () => {
                 </div>
                 <div className="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between">
                   <span className="text-sm font-bold text-slate-900">Day 1 Total</span>
-                  <span className="text-xl font-black text-terracotta-600 font-display">€300</span>
+                  <span className="text-xl font-black text-terracotta-600 font-display">₹9,050</span>
                 </div>
               </div>
 
@@ -716,7 +587,7 @@ export const LandingPage: React.FC = () => {
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
                   7-Day Total
                 </p>
-                <p className="text-3xl font-black text-slate-900 font-display">€2,100</p>
+                <p className="text-3xl font-black text-slate-900 font-display">₹58,500</p>
                 <p className="text-xs text-slate-400 mt-1">per person · moderate budget</p>
                 <button
                   id="trip-preview-plan-btn"
@@ -1269,144 +1140,6 @@ export const LandingPage: React.FC = () => {
           </svg>
         </div>
 
-        {/* ─ Footer navigation ─ */}
-        <div className="bg-terracotta-900 pt-14 pb-10">
-          <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-
-            {/* Brand */}
-            <div className="flex items-center gap-3 mb-12">
-              <div className="w-10 h-10 rounded-xl bg-terracotta-500 flex items-center justify-center shadow-sm">
-                <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M2 12h20" />
-                  <path d="M12 2c2.5 4 2.5 16 0 20" />
-                  <path d="M12 2c-2.5 4-2.5 16 0 20" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-lg font-extrabold text-white font-display tracking-tight leading-none">
-                  Globe<span className="text-amber-400">Trotter</span>
-                </p>
-                <p className="text-[10px] text-white/45 uppercase tracking-widest mt-0.5">
-                  Personalized Travel
-                </p>
-              </div>
-            </div>
-
-            {/* Nav columns */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-12">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-4">
-                  Explore
-                </p>
-                <ul className="space-y-3">
-                  <li>
-                    <Link
-                      to="/explore"
-                      className="text-sm text-white/70 hover:text-white transition-colors"
-                    >
-                      Destinations
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/explore"
-                      className="text-sm text-white/70 hover:text-white transition-colors"
-                    >
-                      Explore Trips
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-4">
-                  Plan
-                </p>
-                <ul className="space-y-3">
-                  <li>
-                    <Link
-                      to="/plan"
-                      className="text-sm text-white/70 hover:text-white transition-colors"
-                    >
-                      AI Planner
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/trips"
-                      className="text-sm text-white/70 hover:text-white transition-colors"
-                    >
-                      My Trips
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/trips"
-                      className="text-sm text-white/70 hover:text-white transition-colors"
-                    >
-                      Budget
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-4">
-                  Account
-                </p>
-                <ul className="space-y-3">
-                  <li>
-                    <Link
-                      to="/login"
-                      className="text-sm text-white/70 hover:text-white transition-colors"
-                    >
-                      Log In
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/signup"
-                      className="text-sm text-white/70 hover:text-white transition-colors"
-                    >
-                      Sign Up
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/profile"
-                      className="text-sm text-white/70 hover:text-white transition-colors"
-                    >
-                      Profile
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-4">
-                  Legal
-                </p>
-                <ul className="space-y-3">
-                  <li>
-                    <span className="text-sm text-white/50 cursor-default select-none">Privacy</span>
-                  </li>
-                  <li>
-                    <span className="text-sm text-white/50 cursor-default select-none">Terms</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Bottom bar */}
-            <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <p className="text-xs text-white/35">
-                © 2025 GlobeTrotter. Plan better, travel further.
-              </p>
-              <p className="text-xs text-white/25">Built for travelers, by travelers.</p>
-            </div>
-          </div>
-        </div>
       </footer>
     </div>
   );

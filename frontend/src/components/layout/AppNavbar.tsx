@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
-  Globe, 
-  Search, 
   Sparkles, 
   Bell, 
   Menu, 
-  X, 
   Compass, 
   MapPin, 
   User as UserIcon, 
   Settings, 
   LogOut,
   ChevronDown,
-  LogIn,
-  Users
+  LogIn
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Avatar } from '@/components/ui/Avatar';
@@ -28,22 +24,11 @@ interface AppNavbarProps {
 
 export const AppNavbar: React.FC<AppNavbarProps> = ({ onToggleSidebar, isSidebarOpen }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { user, isAuthenticated, logout, switchDemoPersona, demoPersonas } = useAuth();
-  const { info, ai } = useToast();
+  const { ai } = useToast();
 
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-    info('Searching GlobeTrotter', `Looking for destinations matching "${searchQuery}"`);
-    navigate(`/explore?search=${encodeURIComponent(searchQuery)}`);
-    setIsSearchOpen(false);
-  };
 
   const handleAIMagicClick = () => {
     ai('AI Travel Planner Ready', 'Describe your dream trip in plain words!');
@@ -78,48 +63,33 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({ onToggleSidebar, isSidebar
               to="/" 
               className="flex items-center gap-2.5 group focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-500 rounded-xl"
             >
-              <div className="w-9 h-9 rounded-xl bg-terracotta-500 flex items-center justify-center text-white shadow-sm group-hover:bg-terracotta-600 transition-colors">
-                <Globe className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12" />
+              <div className="w-9 h-9 rounded-xl bg-terracotta-500 flex items-center justify-center shadow-sm group-hover:bg-terracotta-600 transition-colors overflow-visible">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-[22px] h-[22px] transition-transform duration-300 group-hover:scale-105" aria-hidden="true">
+                  <defs>
+                    <mask id="pinHole">
+                      <rect width="24" height="24" fill="white"/>
+                      <circle cx="12" cy="9" r="6.5" fill="black"/>
+                    </mask>
+                  </defs>
+                  <path d="M12 1.5c-4.14 0-7.5 3.36-7.5 7.5 0 3.87 3.83 8.72 5.93 11.26.42.51 1.03.81 1.68.81.65 0 1.26-.3 1.68-.81C15.67 17.72 19.5 12.87 19.5 9c0-4.14-3.36-7.5-7.5-7.5z" fill="white" mask="url(#pinHole)"/>
+                  <circle cx="12" cy="9" r="6.5" fill="white"/>
+                  <path d="M6.8 12.95c.6-1.7 2.35-4.35 4.45-4.35 1.4 0 2.7.8 3.25 2 .2.4.55.7.95.85l2.55.95" stroke="#C94331" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
+                  <path d="M15.75 9.32l1.97-.66a.38.38 0 0 0 .24-.48l-.34-.92a.38.38 0 0 0-.48-.24l-1.97.66-1.08-1.56a.38.38 0 0 0-.58-.1l-.59.45a.38.38 0 0 0-.1.57l.93 1.34-1.22.41a.38.38 0 0 0-.24.47l.18.53c.07.22.32.34.54.26l1.21-.4-.93 1.34a.38.38 0 0 0 .1.57l.59.45c.21.16.49.13.67-.07l1.12-1.61z" fill="#C94331" />
+                </svg>
               </div>
               <div className="flex flex-col">
                 <span className="font-display font-extrabold text-lg text-slate-900 tracking-tight leading-none">
                   Globe<span className="text-terracotta-500">Trotter</span>
                 </span>
-                <span className="text-[10px] font-medium text-slate-500 tracking-wider uppercase leading-tight mt-0.5 hidden sm:inline-block">
-                  Personalized Travel
-                </span>
               </div>
             </Link>
           </div>
 
-          {/* Center: Search Bar (Desktop) */}
-          <div className="hidden md:flex flex-1 max-w-md mx-2">
-            <form onSubmit={handleSearchSubmit} className="w-full relative">
-              <div className="relative flex items-center">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
-                <input
-                  type="text"
-                  placeholder="Search destinations (Goa, Paris, Kyoto...)"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-sand-50/80 hover:bg-sand-100/70 focus:bg-white text-xs sm:text-sm text-slate-800 rounded-full pl-9 pr-4 py-2 border border-slate-200/80 focus:border-terracotta-400 focus:outline-none focus:ring-2 focus:ring-terracotta-200/50 transition-all placeholder:text-slate-400"
-                />
-              </div>
-            </form>
-          </div>
+          {/* Spacer to balance layout now that search is removed */}
+          <div className="hidden md:flex flex-1" />
 
           {/* Right: Actions, AI CTA, Notifications & User Avatar */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Mobile Search Toggle */}
-            <button
-              type="button"
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              aria-label="Search"
-              className="md:hidden p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-sand-100 transition-colors"
-            >
-              <Search className="w-5 h-5" />
-            </button>
-
             {/* AI Travel Planner CTA */}
             <Button
               variant="ai-subtle"
@@ -306,30 +276,6 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({ onToggleSidebar, isSidebar
             )}
           </div>
         </div>
-
-        {/* Mobile Search Bar Expansion */}
-        {isSearchOpen && (
-          <div className="py-3 border-t border-slate-100 md:hidden animate-fade-in">
-            <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Search destinations..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                autoFocus
-                className="w-full bg-sand-50 text-sm text-slate-800 rounded-xl pl-10 pr-10 py-2 border border-slate-200 focus:outline-none focus:border-terracotta-500"
-              />
-              <button
-                type="button"
-                onClick={() => setIsSearchOpen(false)}
-                className="absolute right-3 text-slate-400 hover:text-slate-600"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </form>
-          </div>
-        )}
       </div>
     </header>
   );

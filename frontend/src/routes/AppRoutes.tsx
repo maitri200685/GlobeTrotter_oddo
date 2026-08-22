@@ -10,6 +10,9 @@ import { SignupPage } from '@/pages/auth/SignupPage';
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
 import { ProfilePage } from '@/pages/profile/ProfilePage';
 import { SettingsPage } from '@/pages/profile/SettingsPage';
+import { SavedPage } from '@/pages/profile/SavedPage';
+import { DestinationGuidePage } from '@/pages/public/DestinationGuidePage';
+import { PublicSharePage } from '@/pages/public/PublicSharePage';
 import { DesignSystemShowcase } from '@/pages/DesignSystemShowcase';
 
 // Phase 3 Pages
@@ -27,6 +30,26 @@ import { TripActivitiesPage } from '@/pages/trips/TripActivitiesPage';
 
 // Phase 6 Pages
 import { TripItineraryPage } from '@/pages/trips/TripItineraryPage';
+
+// Phase 7 Pages
+import { TripCalendarPage } from '@/pages/trips/TripCalendarPage';
+import { TripMapPage } from '@/pages/trips/TripMapPage';
+
+// Phase 8 Pages
+import { TripBudgetPage } from '@/pages/trips/TripBudgetPage';
+
+// Phase 9 Pages
+import { AIPlannerPage } from '@/pages/planner/AIPlannerPage';
+
+// Phase 10 Pages
+import { TripAssistantPage } from '@/pages/trips/TripAssistantPage';
+
+// Phase 11 Pages
+import { ExplorePage } from '@/pages/explore/ExplorePage';
+import { TripSharePage } from '@/pages/trips/TripSharePage';
+
+// Phase 12 — Polish
+import { NotFoundPage } from '@/pages/NotFoundPage';
 
 // Placeholders for subsequent phases
 import { PlaceholderPage } from '@/components/common/PlaceholderPage';
@@ -76,7 +99,7 @@ export const AppRoutes: React.FC = () => {
           path="/saved"
           element={
             <ProtectedRoute>
-              <ProfilePage />
+              <SavedPage />
             </ProtectedRoute>
           }
         />
@@ -152,172 +175,86 @@ export const AppRoutes: React.FC = () => {
             </ProtectedRoute>
           }
         />
-
-        {/* Flagship AI Travel Planner Workspace */}
+        {/* Alias: /itinerary → same builder page */}
         <Route
-          path="/plan"
+          path="/trips/:tripId/itinerary"
           element={
-            <PlaceholderPage
-              title="AI Travel Planner Workspace"
-              subtitle="Conversational intelligent travel agent with real-time reactive trip brief."
-              phaseNumber={9}
-              phaseName="Embedded AI Travel Planner"
-              icon={<Sparkles className="w-6 h-6 text-purple-600" />}
-              featuresList={[
-                'Split-screen layout (Conversational chat on left, Live brief on right)',
-                'Interactive chips for budget, duration, and travel vibes',
-                '7-Step travel planning progress visualizer',
-                'Instant editable generated trip preview card',
-              ]}
-              primaryActionLabel="View Sample Trip Shell"
-              primaryActionPath="/trips/trip-101"
-            />
+            <ProtectedRoute>
+              <TripItineraryPage />
+            </ProtectedRoute>
           }
         />
 
-        {/* Active Trip Workspace Views (Phases 7-10) */}
+        {/* Phase 7: Multi-Day Calendar Schedule & Interactive Journey Map */}
         <Route
           path="/trips/:tripId/calendar"
           element={
-            <PlaceholderPage
-              title="Multi-Day Calendar Schedule"
-              subtitle="Multi-day grid color-coded by category (Transport, Hotel, Activity, Food)."
-              phaseNumber={7}
-              phaseName="Calendar, Transit & Journey Map"
-              icon={<CalendarDays className="w-6 h-6" />}
-              featuresList={[
-                'Week & Multi-Day interactive time grid',
-                'Category filters and color-coded event blocks',
-                'Click-to-edit scheduled activities',
-              ]}
-            />
+            <ProtectedRoute>
+              <TripCalendarPage />
+            </ProtectedRoute>
           }
         />
         <Route
           path="/trips/:tripId/map"
           element={
-            <PlaceholderPage
-              title="Interactive Journey Map"
-              subtitle="Geographic route visualizer plotting cities, hotels, activities, and transit."
-              phaseNumber={7}
-              phaseName="Calendar, Transit & Journey Map"
-              icon={<Map className="w-6 h-6" />}
-              featuresList={[
-                'Interactive map with custom pins for hotels, activities, and cities',
-                'Inter-city connecting transit polylines',
-                'Clickable popup cards with itinerary shortcuts',
-              ]}
-            />
+            <ProtectedRoute>
+              <TripMapPage />
+            </ProtectedRoute>
           }
         />
+
+        {/* Flagship AI Travel Planner Workspace (Phase 9) */}
+        <Route
+          path="/plan"
+          element={
+            <ProtectedRoute>
+              <AIPlannerPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Phase 8: Budget Tracker & Cost Breakdown Analytics */}
         <Route
           path="/trips/:tripId/budget"
           element={
-            <PlaceholderPage
-              title="Trip Budget & Cost Breakdown"
-              subtitle="Target Budget vs Estimated Costs with donut breakdown and budget alerts."
-              phaseNumber={8}
-              phaseName="Budget & Cost Analysis"
-              icon={<PieChart className="w-6 h-6" />}
-              featuresList={[
-                'Budget health gauge (Healthy, Warning, Exceeded)',
-                'Categorized Donut chart (Stays, Transport, Food, Activities)',
-                'Daily expense bar chart',
-                'Per-person cost split calculator',
-              ]}
-            />
+            <ProtectedRoute>
+              <TripBudgetPage />
+            </ProtectedRoute>
           }
         />
+        {/* Phase 10: In-Trip AI Co-Pilot */}
         <Route
           path="/trips/:tripId/assistant"
           element={
-            <PlaceholderPage
-              title="In-Trip AI Assistant & Co-Pilot"
-              subtitle="Ask AI to optimize budget, swap hotels, and adjust day schedules."
-              phaseNumber={10}
-              phaseName="In-Trip AI Assistant"
-              icon={<Sparkles className="w-6 h-6 text-purple-600" />}
-              featuresList={[
-                'Suggested prompt chips ("Make cheaper", "Add beaches", "Relax Day 3")',
-                'Structured diff review cards with cost impact',
-                'One-click "Apply Changes to Trip" integration',
-              ]}
-            />
+            <ProtectedRoute>
+              <TripAssistantPage />
+            </ProtectedRoute>
           }
         />
+        {/* Phase 11: Trip Share & Privacy */}
         <Route
           path="/trips/:tripId/share"
           element={
-            <PlaceholderPage
-              title="Share Trip & Privacy"
-              subtitle="Generate public shareable links, view QR code, and manage permissions."
-              phaseNumber={11}
-              phaseName="Explore, Sharing & Forking"
-              icon={<Share2 className="w-6 h-6" />}
-              featuresList={[
-                'Public link copy with one-click toast feedback',
-                'Privacy toggle (Public, Unlisted, Private)',
-                'QR code preview for mobile scanning',
-              ]}
-            />
+            <ProtectedRoute>
+              <TripSharePage />
+            </ProtectedRoute>
           }
         />
 
-        {/* Explore & Public Itineraries */}
+        {/* Phase 11: Explore Hub */}
         <Route
           path="/explore"
           element={
-            <PlaceholderPage
-              title="Explore Destinations & Community Trips"
-              subtitle="Browse trending itineraries, travel guides, and curated trips from fellow travelers."
-              phaseNumber={11}
-              phaseName="Explore, Sharing & Forking"
-              icon={<MapPin className="w-6 h-6" />}
-              featuresList={[
-                'Trending community itineraries carousel with clone counters',
-                'City destination guides catalog with weather and costs',
-                'Filter by budget style, region, and travel vibe',
-              ]}
-            />
+            <ProtectedRoute>
+              <ExplorePage />
+            </ProtectedRoute>
           }
         />
-        <Route
-          path="/destinations/:id"
-          element={
-            <PlaceholderPage
-              title="Destination Deep Dive Guide"
-              subtitle="Complete city guide, top attractions, recommended stays, and typical daily costs."
-              phaseNumber={11}
-              phaseName="Explore, Sharing & Forking"
-              icon={<MapPin className="w-6 h-6" />}
-              featuresList={[
-                'Photo gallery & best season to visit',
-                'Top rated activities and neighborhood guide',
-                '"Plan Trip to this City" 1-click CTA',
-              ]}
-            />
-          }
-        />
-        <Route
-          path="/share/:shareId"
-          element={
-            <PlaceholderPage
-              title="Public Shared Itinerary"
-              subtitle="Read-only public view with one-click 'Copy Trip to My Account' feature."
-              phaseNumber={11}
-              phaseName="Explore, Sharing & Forking"
-              icon={<Share2 className="w-6 h-6" />}
-              featuresList={[
-                'High-aesthetic public presentation layout',
-                'Day-by-day timeline, hotel cards, and map',
-                '1-Click "Copy / Fork Trip" to clone into user account',
-              ]}
-            />
-          }
-        />
+        <Route path="/destinations/:id" element={<DestinationGuidePage />} />
+        <Route path="/share/:shareId" element={<PublicSharePage />} />
 
         {/* Fallback 404 Route */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );

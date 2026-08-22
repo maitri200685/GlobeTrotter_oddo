@@ -4,6 +4,20 @@ GlobeTrotter is a personalized travel planning platform that allows users to cre
 
 The major differentiator of GlobeTrotter is the **AI Travel Agent**, which assists users through natural language to plan, validate, and optimize their trips based on their specific budget, dates, and interests.
 
+## Features
+
+* **Multi-City Itineraries:** Seamlessly plan trips spanning multiple destinations.
+* **AI-Powered Recommendations:** Get intelligent suggestions for activities and hotels.
+* **Budget Tracking:** Keep a close eye on your expenses throughout the trip.
+
+## Backend Setup
+The backend is built with Node.js, Express, and TypeScript.
+1. `cd backend`
+2. `npm install`
+3. Copy `.env.example` to `.env` and fill in your Supabase credentials.
+4. Run `npm run dev` to start the development server.
+5. Run `npm run test` to execute the automated tests.
+
 ## Architecture Summary
 
 - **Frontend:** React, Vite, TypeScript

@@ -28,6 +28,10 @@ import { TripActivitiesPage } from '@/pages/trips/TripActivitiesPage';
 // Phase 6 Pages
 import { TripItineraryPage } from '@/pages/trips/TripItineraryPage';
 
+// Phase 7 Pages
+import { TripCalendarPage } from '@/pages/trips/TripCalendarPage';
+import { TripMapPage } from '@/pages/trips/TripMapPage';
+
 // Placeholders for subsequent phases
 import { PlaceholderPage } from '@/components/common/PlaceholderPage';
 import { 
@@ -153,6 +157,24 @@ export const AppRoutes: React.FC = () => {
           }
         />
 
+        {/* Phase 7: Multi-Day Calendar Schedule & Interactive Journey Map */}
+        <Route
+          path="/trips/:tripId/calendar"
+          element={
+            <ProtectedRoute>
+              <TripCalendarPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trips/:tripId/map"
+          element={
+            <ProtectedRoute>
+              <TripMapPage />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Flagship AI Travel Planner Workspace */}
         <Route
           path="/plan"
@@ -175,41 +197,7 @@ export const AppRoutes: React.FC = () => {
           }
         />
 
-        {/* Active Trip Workspace Views (Phases 7-10) */}
-        <Route
-          path="/trips/:tripId/calendar"
-          element={
-            <PlaceholderPage
-              title="Multi-Day Calendar Schedule"
-              subtitle="Multi-day grid color-coded by category (Transport, Hotel, Activity, Food)."
-              phaseNumber={7}
-              phaseName="Calendar, Transit & Journey Map"
-              icon={<CalendarDays className="w-6 h-6" />}
-              featuresList={[
-                'Week & Multi-Day interactive time grid',
-                'Category filters and color-coded event blocks',
-                'Click-to-edit scheduled activities',
-              ]}
-            />
-          }
-        />
-        <Route
-          path="/trips/:tripId/map"
-          element={
-            <PlaceholderPage
-              title="Interactive Journey Map"
-              subtitle="Geographic route visualizer plotting cities, hotels, activities, and transit."
-              phaseNumber={7}
-              phaseName="Calendar, Transit & Journey Map"
-              icon={<Map className="w-6 h-6" />}
-              featuresList={[
-                'Interactive map with custom pins for hotels, activities, and cities',
-                'Inter-city connecting transit polylines',
-                'Clickable popup cards with itinerary shortcuts',
-              ]}
-            />
-          }
-        />
+        {/* Active Trip Workspace Views (Phases 8-10) */}
         <Route
           path="/trips/:tripId/budget"
           element={

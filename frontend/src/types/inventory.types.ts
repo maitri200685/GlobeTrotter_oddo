@@ -18,7 +18,9 @@ export type AmenityType =
   | 'Bar' 
   | 'Fitness Center' 
   | 'Air Conditioning'
-  | 'Heritage Courtyard';
+  | 'Heritage Courtyard'
+  | 'Rooftop View'
+  | 'Rooftop Temple View';
 
 export interface Hotel {
   id: string;

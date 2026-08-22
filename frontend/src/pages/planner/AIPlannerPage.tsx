@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiClient } from '@/lib/apiClient';
 import {
   Sparkles,
   Send,
@@ -63,7 +64,7 @@ const GENERATION_STEPS = [
 export const AIPlannerPage: React.FC = () => {
   const navigate = useNavigate();
   const { success, info } = useToast();
-  const { trips } = useTrip();
+  const { trips, createTrip } = useTrip();
   const { user } = useAuth();
 
   const [step, setStep] = useState<PlannerStep>('destination');
@@ -163,18 +164,66 @@ export const AIPlannerPage: React.FC = () => {
 
     setStep('generating');
     setIsGenerating(true);
+    setGenerationStep(1);
 
-    // Simulate step-by-step AI generation
-    for (let i = 0; i < GENERATION_STEPS.length; i++) {
-      await new Promise((res) => setTimeout(res, 700));
-      setGenerationStep(i + 1);
+    try {
+      // STEP 1: Create a real trip in the backend/Supabase
+      addMessage('ai', `📍 Creating your **${destination}** trip...`);
+      setGenerationStep(2);
+
+      const newTrip = await createTrip({
+        title: `${destination} Adventure`,
+        description: `AI-planned trip to ${destination} with vibes: ${vibeLabels}`,
+        startDate,
+        endDate,
+        travelerCount: travelers,
+        travelerType: travelers === 1 ? 'solo' : travelers === 2 ? 'couple' : 'friends',
+        targetBudget: budget,
+        currency: 'INR',
+        travelStyle: 'comfort',
+        coverImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&h=500&q=80',
+      });
+
+      setGenerationStep(3);
+      addMessage('ai', `✅ Trip created! Now asking AI to plan your complete itinerary...`);
+
+      // STEP 2: Ask the AI agent to plan the full trip
+      const prompt = `Plan a detailed ${totalDays > 0 ? totalDays + '-day' : ''} trip to ${destination} from ${startDate || 'soon'} to ${endDate || 'soon'} for ${travelers} traveler(s). Total budget: ₹${budget.toLocaleString()}. Travel vibes: ${vibeLabels}. Please search for cities, hotels, and activities, calculate the budget, and submit a complete travel plan using the available tools.`;
+
+      setGenerationStep(4);
+
+      try {
+        // Call the agent with the trip context
+        const agentResponse = await apiClient.post<{ message: string; status: string; observations: any[] }>('/agent/chat', {
+          message: prompt,
+          tripId: newTrip.id,
+        });
+
+        setGenerationStep(5);
+        addMessage('ai', `🤖 AI Agent completed: ${agentResponse?.message?.substring(0, 200) || 'Plan generated'}...`);
+      } catch (agentErr) {
+        // Agent may fail (e.g., Mistral API issues) but the trip is still created
+        console.warn('[AIPlannerPage] Agent call failed, trip still created:', agentErr);
+        addMessage('ai', `⚠️ AI planning encountered an issue, but your trip has been created! You can add details manually.`);
+      }
+
+      setGenerationStep(6);
+      setIsGenerating(false);
+      setStep('result');
+
+      addMessage('ai', `🎉 Your **${destination}** trip is ready! It's saved to "My Trips" and you can customize every detail. Let's go!`);
+      success('Trip Created & Planned!', `"${newTrip.title}" is ready in My Trips.`);
+
+      // Auto-navigate to the new trip after a short delay
+      setTimeout(() => {
+        navigate(`/trips/${newTrip.id}`);
+      }, 2000);
+
+    } catch (err: any) {
+      setIsGenerating(false);
+      setStep('vibes');
+      addMessage('ai', `❌ Failed to create trip: ${err.message || 'Unknown error'}. Please try again or use the manual trip builder.`);
     }
-
-    setIsGenerating(false);
-    setStep('result');
-
-    addMessage('ai', `🎉 Your **${destination}** itinerary is ready! I've planned a perfectly balanced trip with the best hotels, curated activities, and a budget that works. You can now view and customize it in your Trip Planner!`);
-    success('Trip Plan Ready!', `Your ${destination} trip is ready to view.`);
   };
 
   const handleUseExistingTrip = () => {
@@ -184,6 +233,7 @@ export const AIPlannerPage: React.FC = () => {
       navigate('/trips/create');
     }
   };
+
 
   const totalDays = startDate && endDate
     ? Math.max(1, Math.round((new Date(endDate).getTime() - new Date(startDate).getTime()) / 86400000))

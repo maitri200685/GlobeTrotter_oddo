@@ -93,8 +93,9 @@ class AIService {
    * Backend: POST /api/ai/assist
    */
   async getAssistantSuggestions(request: AIAssistRequest): Promise<AIAssistResponse> {
-    const response = await apiClient.post<{ message: string; suggestions?: AISuggestion[] }>(`/trips/${request.tripId}/assistant`, {
-      query: request.query,
+    // Backend assistant endpoint expects 'message' field, not 'query'
+    const response = await apiClient.post<{ message: string; status?: string; intent?: string; suggestions?: AISuggestion[] }>(`/trips/${request.tripId}/assistant`, {
+      message: request.query,
     });
 
     return {

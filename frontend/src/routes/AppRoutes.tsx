@@ -32,6 +32,19 @@ import { TripItineraryPage } from '@/pages/trips/TripItineraryPage';
 import { TripCalendarPage } from '@/pages/trips/TripCalendarPage';
 import { TripMapPage } from '@/pages/trips/TripMapPage';
 
+// Phase 8 Pages
+import { TripBudgetPage } from '@/pages/trips/TripBudgetPage';
+
+// Phase 9 Pages
+import { AIPlannerPage } from '@/pages/planner/AIPlannerPage';
+
+// Phase 10 Pages
+import { TripAssistantPage } from '@/pages/trips/TripAssistantPage';
+
+// Phase 11 Pages
+import { ExplorePage } from '@/pages/explore/ExplorePage';
+import { TripSharePage } from '@/pages/trips/TripSharePage';
+
 // Placeholders for subsequent phases
 import { PlaceholderPage } from '@/components/common/PlaceholderPage';
 import { 
@@ -175,98 +188,51 @@ export const AppRoutes: React.FC = () => {
           }
         />
 
-        {/* Flagship AI Travel Planner Workspace */}
+        {/* Flagship AI Travel Planner Workspace (Phase 9) */}
         <Route
           path="/plan"
           element={
-            <PlaceholderPage
-              title="AI Travel Planner Workspace"
-              subtitle="Conversational intelligent travel agent with real-time reactive trip brief."
-              phaseNumber={9}
-              phaseName="Embedded AI Travel Planner"
-              icon={<Sparkles className="w-6 h-6 text-purple-600" />}
-              featuresList={[
-                'Split-screen layout (Conversational chat on left, Live brief on right)',
-                'Interactive chips for budget, duration, and travel vibes',
-                '7-Step travel planning progress visualizer',
-                'Instant editable generated trip preview card',
-              ]}
-              primaryActionLabel="View Sample Trip Shell"
-              primaryActionPath="/trips/trip-101"
-            />
+            <ProtectedRoute>
+              <AIPlannerPage />
+            </ProtectedRoute>
           }
         />
 
-        {/* Active Trip Workspace Views (Phases 8-10) */}
+        {/* Phase 8: Budget Tracker & Cost Breakdown Analytics */}
         <Route
           path="/trips/:tripId/budget"
           element={
-            <PlaceholderPage
-              title="Trip Budget & Cost Breakdown"
-              subtitle="Target Budget vs Estimated Costs with donut breakdown and budget alerts."
-              phaseNumber={8}
-              phaseName="Budget & Cost Analysis"
-              icon={<PieChart className="w-6 h-6" />}
-              featuresList={[
-                'Budget health gauge (Healthy, Warning, Exceeded)',
-                'Categorized Donut chart (Stays, Transport, Food, Activities)',
-                'Daily expense bar chart',
-                'Per-person cost split calculator',
-              ]}
-            />
+            <ProtectedRoute>
+              <TripBudgetPage />
+            </ProtectedRoute>
           }
         />
+        {/* Phase 10: In-Trip AI Co-Pilot */}
         <Route
           path="/trips/:tripId/assistant"
           element={
-            <PlaceholderPage
-              title="In-Trip AI Assistant & Co-Pilot"
-              subtitle="Ask AI to optimize budget, swap hotels, and adjust day schedules."
-              phaseNumber={10}
-              phaseName="In-Trip AI Assistant"
-              icon={<Sparkles className="w-6 h-6 text-purple-600" />}
-              featuresList={[
-                'Suggested prompt chips ("Make cheaper", "Add beaches", "Relax Day 3")',
-                'Structured diff review cards with cost impact',
-                'One-click "Apply Changes to Trip" integration',
-              ]}
-            />
+            <ProtectedRoute>
+              <TripAssistantPage />
+            </ProtectedRoute>
           }
         />
+        {/* Phase 11: Trip Share & Privacy */}
         <Route
           path="/trips/:tripId/share"
           element={
-            <PlaceholderPage
-              title="Share Trip & Privacy"
-              subtitle="Generate public shareable links, view QR code, and manage permissions."
-              phaseNumber={11}
-              phaseName="Explore, Sharing & Forking"
-              icon={<Share2 className="w-6 h-6" />}
-              featuresList={[
-                'Public link copy with one-click toast feedback',
-                'Privacy toggle (Public, Unlisted, Private)',
-                'QR code preview for mobile scanning',
-              ]}
-            />
+            <ProtectedRoute>
+              <TripSharePage />
+            </ProtectedRoute>
           }
         />
 
-        {/* Explore & Public Itineraries */}
+        {/* Phase 11: Explore Hub */}
         <Route
           path="/explore"
           element={
-            <PlaceholderPage
-              title="Explore Destinations & Community Trips"
-              subtitle="Browse trending itineraries, travel guides, and curated trips from fellow travelers."
-              phaseNumber={11}
-              phaseName="Explore, Sharing & Forking"
-              icon={<MapPin className="w-6 h-6" />}
-              featuresList={[
-                'Trending community itineraries carousel with clone counters',
-                'City destination guides catalog with weather and costs',
-                'Filter by budget style, region, and travel vibe',
-              ]}
-            />
+            <ProtectedRoute>
+              <ExplorePage />
+            </ProtectedRoute>
           }
         />
         <Route

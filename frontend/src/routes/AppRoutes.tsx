@@ -45,6 +45,9 @@ import { TripAssistantPage } from '@/pages/trips/TripAssistantPage';
 import { ExplorePage } from '@/pages/explore/ExplorePage';
 import { TripSharePage } from '@/pages/trips/TripSharePage';
 
+// Phase 12 — Polish
+import { NotFoundPage } from '@/pages/NotFoundPage';
+
 // Placeholders for subsequent phases
 import { PlaceholderPage } from '@/components/common/PlaceholderPage';
 import { 
@@ -271,7 +274,7 @@ export const AppRoutes: React.FC = () => {
         />
 
         {/* Fallback 404 Route */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
   );

@@ -21,6 +21,13 @@ import { CreateTripPage } from '@/pages/trips/CreateTripPage';
 import { TripOverviewPage } from '@/pages/trips/TripOverviewPage';
 import { TripCitiesPage } from '@/pages/trips/TripCitiesPage';
 
+// Phase 5 Pages
+import { TripHotelsPage } from '@/pages/trips/TripHotelsPage';
+import { TripActivitiesPage } from '@/pages/trips/TripActivitiesPage';
+
+// Phase 6 Pages
+import { TripItineraryPage } from '@/pages/trips/TripItineraryPage';
+
 // Placeholders for subsequent phases
 import { PlaceholderPage } from '@/components/common/PlaceholderPage';
 import { 
@@ -118,6 +125,34 @@ export const AppRoutes: React.FC = () => {
           }
         />
 
+        {/* Phase 5: Hotel Discovery & Activity Scheduler */}
+        <Route
+          path="/trips/:tripId/hotels"
+          element={
+            <ProtectedRoute>
+              <TripHotelsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/trips/:tripId/activities"
+          element={
+            <ProtectedRoute>
+              <TripActivitiesPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Phase 6: Day-by-Day Timeline Itinerary Builder */}
+        <Route
+          path="/trips/:tripId/builder"
+          element={
+            <ProtectedRoute>
+              <TripItineraryPage />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Flagship AI Travel Planner Workspace */}
         <Route
           path="/plan"
@@ -140,60 +175,7 @@ export const AppRoutes: React.FC = () => {
           }
         />
 
-        {/* Active Trip Workspace Views (Phases 5-10) */}
-        <Route
-          path="/trips/:tripId/hotels"
-          element={
-            <PlaceholderPage
-              title="Hotel Discovery & Stays"
-              subtitle="Curated accommodations with AI match scores and side-by-side comparison drawer."
-              phaseNumber={5}
-              phaseName="Activity & Hotel Discovery"
-              icon={<Hotel className="w-6 h-6" />}
-              featuresList={[
-                'Price per night and calculated total stay cost',
-                '"Why AI Recommends this" highlight badges',
-                'Multi-property comparison drawer',
-                'Room selection and reservation notes',
-              ]}
-            />
-          }
-        />
-        <Route
-          path="/trips/:tripId/activities"
-          element={
-            <PlaceholderPage
-              title="Activity Discovery & Scheduling"
-              subtitle="Discover sightseeing, dining, adventure, culture, and nightlife activities."
-              phaseNumber={5}
-              phaseName="Activity & Hotel Discovery"
-              icon={<Footprints className="w-6 h-6" />}
-              featuresList={[
-                'Category filters (Sightseeing, Food, Adventure, Nightlife, Nature)',
-                'Duration and cost estimation badges',
-                'Add to day modal with time-slot selection',
-              ]}
-            />
-          }
-        />
-        <Route
-          path="/trips/:tripId/builder"
-          element={
-            <PlaceholderPage
-              title="Day-by-Day Itinerary Builder"
-              subtitle="Interactive vertical timeline with scheduled time slots and custom events."
-              phaseNumber={6}
-              phaseName="Itinerary Builder & Agenda"
-              icon={<Clock className="w-6 h-6" />}
-              featuresList={[
-                'Day-by-day vertical timeline with time slots',
-                'Move up/down and drag reordering within days',
-                'Quick-add custom event & meal reservations',
-                'Clean printable agenda view',
-              ]}
-            />
-          }
-        />
+        {/* Active Trip Workspace Views (Phases 7-10) */}
         <Route
           path="/trips/:tripId/calendar"
           element={

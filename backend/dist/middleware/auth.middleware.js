@@ -22,8 +22,9 @@ const requireAuth = async (req, res, next) => {
         if (error || !data.user) {
             throw new errors_1.UnauthorizedError('Invalid or expired token');
         }
-        // Attach verified user to request
+        // Attach verified user and token to request
         req.user = data.user;
+        req.token = token;
         next();
     }
     catch (error) {

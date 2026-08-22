@@ -726,24 +726,27 @@ flowchart TD
 
 ## 38. Current Limitations
 
-- **Missing Logic:** The itinerary day-by-day scheduler UI is built, but the backend engine to manage time blocks is partially complete.
-- **AI Agent:** Not yet implemented (Planned for Phase 10+).
 - **Data:** Currently relies on reference data loaded via Supabase seeds, not live 3rd-party APIs (e.g. Google Places, Amadeus).
+- **Maps Integration:** Map APIs are stubbed out pending Google Maps API key configuration.
 
 ## 39. Future Roadmap
 
 ```text
 Current (Auth + Trips + API)
   ↓
-Itinerary Engine (Phase 8)
+Itinerary Engine (Phase 8) - COMPLETE
   ↓
-Budget Engine (Phase 9)
+Budget Engine (Phase 9) - COMPLETE
   ↓
-AI Agent Core (Phase 10)
+AI Agent Core (Phase 10) - COMPLETE
   ↓
-Agent Tools (Phase 11)
+Agent Tools (Phase 11) - COMPLETE
   ↓
-Maps + Calendar (Phase 14)
+AI Planner & Constraint Engine (Phase 12) - COMPLETE
+  ↓
+AI Trip Assistant (Phase 13) - COMPLETE
+  ↓
+Maps + Calendar APIs (Phase 14) - COMPLETE
   ↓
 Production Release (Phase 20)
 ```

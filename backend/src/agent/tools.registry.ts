@@ -1,6 +1,7 @@
 import { AgentTool } from './agent.types';
 import { getAuthSupabaseClient } from '../config/supabase';
 import { BudgetService } from '../services/budget.service';
+import { PlanningService, TravelPlan } from '../services/planning.service';
 
 export class ToolRegistry {
   private tools: Map<string, AgentTool> = new Map();
@@ -129,5 +130,35 @@ registry.registerTool({
     } catch (e: any) {
       return { success: false, error: { code: 'CALC_ERROR', message: e.message } };
     }
+  }
+});
+// 5. submit_travel_plan
+registry.registerTool({
+  name: 'submit_travel_plan',
+  description: 'Submit a proposed travel plan for validation. If it fails constraints (e.g., budget exceeded, schedule overlap), you will receive the errors back and must replan. If successful, the plan is persisted.',
+  inputSchema: {
+    type: 'object',
+    properties: {
+      plan: {
+        type: 'object',
+        description: 'The full TravelPlan object containing activities, accommodations, dates, and budget.'
+      }
+    },
+    required: ['plan']
+  },
+  async execute(input: { plan: TravelPlan }, context) {
+    const planningService = new PlanningService();
+    const result = await planningService.validatePlan(input.plan, context);
+    
+    if (!result.isValid) {
+      return { success: false, error: { code: 'PLAN_INVALID', message: `Plan validation failed: ${result.errors.join(', ')}` } };
+    }
+
+    const persistResult = await planningService.persistPlan(input.plan, context);
+    if (!persistResult.success) {
+      return { success: false, error: { code: 'PLAN_PERSIST_ERROR', message: persistResult.error || 'Failed to save to database.' } };
+    }
+
+    return { success: true, data: { message: 'Plan validated and finalized successfully.' } };
   }
 });

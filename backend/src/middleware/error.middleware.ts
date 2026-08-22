@@ -6,7 +6,7 @@ import { logger } from '../utils/logger';
 
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof z.ZodError) {
-    return res.status(400).json(sendError('VALIDATION_ERROR', 'Invalid input data', err.errors));
+    return res.status(400).json(sendError('VALIDATION_ERROR', 'Invalid input data', (err as any).errors));
   }
   if (err instanceof AppError) {
     logger.warn({ err, reqId: req.reqId }, `AppError: ${err.message}`);

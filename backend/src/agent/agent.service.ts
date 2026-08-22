@@ -20,16 +20,18 @@ export class AgentService {
     return this.mistral;
   }
 
-  async runAgentLoop(initialState: AgentState, context: ToolContext): Promise<AgentState> {
+  async runAgentLoop(initialState: AgentState, context: ToolContext, customSystemPrompt?: string): Promise<AgentState> {
     let state = { ...initialState };
     
     // Convert history into messages
+    const systemPromptContent = customSystemPrompt || `You are the GlobeTrotter AI Travel Agent. You help users plan trips, find cities, hotels, and activities, and ensure their budget is respected.
+You have access to tools. Always use them to fetch data before making recommendations.
+Never guess or hallucinate facts about hotels or cities. Use the tools.`;
+
     const messages: any[] = [
       {
         role: 'system',
-        content: `You are the GlobeTrotter AI Travel Agent. You help users plan trips, find cities, hotels, and activities, and ensure their budget is respected.
-You have access to tools. Always use them to fetch data before making recommendations.
-Never guess or hallucinate facts about hotels or cities. Use the tools.`
+        content: systemPromptContent
       },
       { role: 'user', content: state.request }
     ];

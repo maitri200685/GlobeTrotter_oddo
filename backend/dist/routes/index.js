@@ -12,6 +12,9 @@ const activity_routes_1 = __importDefault(require("./activity.routes"));
 const trip_routes_1 = __importDefault(require("./trip.routes"));
 const budget_routes_1 = __importDefault(require("./budget.routes"));
 const agent_routes_1 = __importDefault(require("./agent.routes"));
+const assistant_routes_1 = __importDefault(require("./assistant.routes"));
+const timeline_routes_1 = __importDefault(require("./timeline.routes"));
+const map_routes_1 = __importDefault(require("./map.routes"));
 const router = (0, express_1.Router)();
 router.use('/health', health_routes_1.default);
 router.use('/auth', auth_routes_1.default);
@@ -20,5 +23,8 @@ router.use('/hotels', hotel_routes_1.default);
 router.use('/activities', activity_routes_1.default);
 router.use('/trips', trip_routes_1.default);
 router.use('/trips', budget_routes_1.default);
+router.use('/trips', assistant_routes_1.default); // Assistant also scoped under trips
+router.use('/trips', timeline_routes_1.default);
 router.use('/agent', agent_routes_1.default);
+router.use('/maps', map_routes_1.default);
 exports.default = router;

@@ -1,32 +1,72 @@
-# React + TypeScript + Vite
+# GlobeTrotter – Empowering Personalized Travel Planning
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+GlobeTrotter is a personalized travel planning platform that allows users to create, manage, visualize, optimize, and share multi-city travel itineraries.
 
-Currently, two official plugins are available:
+The major differentiator of GlobeTrotter is the **AI Travel Agent**, which assists users through natural language to plan, validate, and optimize their trips based on their specific budget, dates, and interests.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+* **Multi-City Itineraries:** Seamlessly plan trips spanning multiple destinations.
+* **AI-Powered Recommendations:** Get intelligent suggestions for activities and hotels.
+* **Budget Tracking:** Keep a close eye on your expenses throughout the trip.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Setup Instructions
 
-## Expanding the Oxlint configuration
+### Frontend Setup (Root Directory)
+The frontend is built with React, Vite, and TypeScript.
+1. `npm install` (in the project root)
+2. `npm run dev` to start the Vite development server.
+3. `npm run build` to build for production.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+### Backend Setup (`backend/` Directory)
+The backend is built with Node.js, Express, and TypeScript.
+1. `cd backend`
+2. `npm install`
+3. Copy `.env.example` to `.env` and fill in your Supabase credentials.
+4. Run `npm run dev` to start the development server.
+5. Run `npm run test` to execute the automated tests.
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+## Architecture Summary
+
+- **Frontend:** React, Vite, TypeScript
+- **Backend:** Node.js, Express, TypeScript (Modular Monolith)
+- **Database:** Supabase (PostgreSQL) with Row Level Security (RLS)
+- **AI Integration:** Mistral AI driving an Agentic Loop
+
+### Core Principle
+GlobeTrotter fully supports both **manual** and **AI-assisted** trip planning. Both methods write to the exact same underlying relational database structures. The database, not the LLM, is the strict source of truth. The AI uses predefined backend tools to interact with the database securely, ensuring no hallucinations in factual planning data and strict adherence to Row Level Security rules.
+
+## Local Database Setup (Supabase)
+
+GlobeTrotter uses a local Supabase instance for development.
+
+**Requirements:** Docker Desktop
+
+1. **Initialize and Start Supabase**
+```bash
+npx supabase start
+```
+This will automatically apply all database migrations and load the development seed data.
+
+2. **Reset the Database**
+If you need to wipe the database and start fresh:
+```bash
+npx supabase db reset
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+3. **Environment Variables**
+You will need the keys printed by `supabase start`. Ensure you keep the `service_role` key strictly in your backend `.env` file, out of version control and away from the frontend.
+
+## Documentation
+Please refer to the `docs/` folder for complete system architecture and database documentation:
+- [Requirements](docs/requirements.md)
+- [Architecture](docs/architecture.md)
+- [Agent Architecture](docs/agent-architecture.md)
+- [Database Review](docs/database-review.md)
+- [Database Schema](docs/database-schema.md)
+- [RLS Policy Matrix](docs/rls-policy-matrix.md)
+- [Migration Guide](docs/migration-guide.md)
+- [API Design](docs/api-design.md)
+- [Security Model](docs/security-model.md)
+- [Testing Strategy](docs/testing-strategy.md)
+- [Development Phases](docs/development-phases.md)

@@ -19,6 +19,8 @@ export interface SharedTripMeta {
   clones: number;
 }
 
+import { apiClient } from '../lib/apiClient';
+
 class ShareService {
   private readonly BASE_URL = window.location.origin;
 
@@ -36,15 +38,7 @@ class ShareService {
    * Backend: GET /api/trips/:id/share
    */
   async getShareMeta(tripId: string): Promise<SharedTripMeta> {
-    await new Promise((res) => setTimeout(res, 200));
-    return {
-      shareId: `gt-${tripId.slice(-6)}`,
-      shareUrl: `${this.BASE_URL}/share/gt-${tripId.slice(-6)}`,
-      privacy: 'private',
-      createdAt: new Date().toISOString(),
-      views: Math.floor(Math.random() * 50),
-      clones: Math.floor(Math.random() * 20),
-    };
+    return await apiClient.get<SharedTripMeta>(`/trips/${tripId}/share`);
   }
 
   /**
@@ -52,8 +46,7 @@ class ShareService {
    * Backend: PATCH /api/trips/:id/privacy
    */
   async updatePrivacy(tripId: string, privacy: SharePrivacy): Promise<void> {
-    await new Promise((res) => setTimeout(res, 300));
-    // No-op in mock; real call would update server.
+    await apiClient.patch<void>(`/trips/${tripId}/privacy`, { privacy });
   }
 
   /**
@@ -61,8 +54,7 @@ class ShareService {
    * Backend: POST /api/share/:shareId/clone
    */
   async cloneSharedTrip(shareId: string, targetUserId: string): Promise<{ tripId: string }> {
-    await new Promise((res) => setTimeout(res, 800));
-    return { tripId: `cloned-${Date.now()}` };
+    return await apiClient.post<{ tripId: string }>(`/share/${shareId}/clone`, { targetUserId });
   }
 
   /**

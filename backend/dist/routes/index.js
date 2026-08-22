@@ -1,0 +1,36 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const health_routes_1 = __importDefault(require("./health.routes"));
+const auth_routes_1 = __importDefault(require("./auth.routes"));
+const city_routes_1 = __importDefault(require("./city.routes"));
+const hotel_routes_1 = __importDefault(require("./hotel.routes"));
+const activity_routes_1 = __importDefault(require("./activity.routes"));
+const trip_routes_1 = __importDefault(require("./trip.routes"));
+const budget_routes_1 = __importDefault(require("./budget.routes"));
+const agent_routes_1 = __importDefault(require("./agent.routes"));
+const assistant_routes_1 = __importDefault(require("./assistant.routes"));
+const timeline_routes_1 = __importDefault(require("./timeline.routes"));
+const map_routes_1 = __importDefault(require("./map.routes"));
+const share_routes_1 = __importDefault(require("./share.routes"));
+const user_routes_1 = __importDefault(require("./user.routes"));
+const admin_routes_1 = __importDefault(require("./admin.routes"));
+const router = (0, express_1.Router)();
+router.use('/health', health_routes_1.default);
+router.use('/auth', auth_routes_1.default);
+router.use('/cities', city_routes_1.default);
+router.use('/hotels', hotel_routes_1.default);
+router.use('/activities', activity_routes_1.default);
+router.use('/trips', trip_routes_1.default);
+router.use('/trips', budget_routes_1.default);
+router.use('/trips', assistant_routes_1.default); // Assistant also scoped under trips
+router.use('/trips', timeline_routes_1.default);
+router.use('/agent', agent_routes_1.default);
+router.use('/map', map_routes_1.default);
+router.use('/share', share_routes_1.default);
+router.use('/users', user_routes_1.default);
+router.use('/admin', admin_routes_1.default);
+exports.default = router;

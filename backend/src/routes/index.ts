@@ -5,6 +5,8 @@ import cityRoutes from './city.routes';
 import hotelRoutes from './hotel.routes';
 import activityRoutes from './activity.routes';
 import tripRoutes from './trip.routes';
+import budgetRoutes from './budget.routes';
+import agentRoutes from './agent.routes';
 
 const router = Router();
 
@@ -14,5 +16,7 @@ router.use('/cities', cityRoutes);
 router.use('/hotels', hotelRoutes);
 router.use('/activities', activityRoutes);
 router.use('/trips', tripRoutes);
+router.use('/trips', budgetRoutes);
+router.use('/agent', agentRoutes);
 
 export default router;

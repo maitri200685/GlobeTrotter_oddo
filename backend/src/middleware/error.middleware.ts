@@ -1,9 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
+import { z } from 'zod';
 import { AppError } from '../utils/errors';
 import { sendError } from '../utils/response';
 import { logger } from '../utils/logger';
 
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof z.ZodError) {
+    return res.status(400).json(sendError('VALIDATION_ERROR', 'Invalid input data', err.errors));
+  }
   if (err instanceof AppError) {
     logger.warn({ err, reqId: req.reqId }, `AppError: ${err.message}`);
     return res.status(err.statusCode).json(sendError(err.code, err.message, (err as any).details));

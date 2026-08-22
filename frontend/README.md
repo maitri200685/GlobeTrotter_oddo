@@ -10,7 +10,15 @@ The major differentiator of GlobeTrotter is the **AI Travel Agent**, which assis
 * **AI-Powered Recommendations:** Get intelligent suggestions for activities and hotels.
 * **Budget Tracking:** Keep a close eye on your expenses throughout the trip.
 
-## Backend Setup
+## Setup Instructions
+
+### Frontend Setup (Root Directory)
+The frontend is built with React, Vite, and TypeScript.
+1. `npm install` (in the project root)
+2. `npm run dev` to start the Vite development server.
+3. `npm run build` to build for production.
+
+### Backend Setup (`backend/` Directory)
 The backend is built with Node.js, Express, and TypeScript.
 1. `cd backend`
 2. `npm install`

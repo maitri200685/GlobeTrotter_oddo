@@ -6,7 +6,9 @@ export type ActivityCategory =
   | 'adventure' 
   | 'culture' 
   | 'nightlife' 
-  | 'nature';
+  | 'nature'
+  | 'shopping'
+  | 'other';
 
 export type AmenityType = 
   | 'WiFi' 
@@ -18,29 +20,56 @@ export type AmenityType =
   | 'Bar' 
   | 'Fitness Center' 
   | 'Air Conditioning'
-  | 'Heritage Courtyard';
+  | 'Heritage Courtyard'
+  | 'Restaurant'
+  | 'Gym'
+  | 'Beach Access'
+  | 'Backwaters'
+  | 'Ayurveda'
+  | 'Yoga'
+  | 'Garden'
+  | 'Sea View'
+  | 'City Tours'
+  | 'Golf'
+  | 'Polo'
+  | 'Heritage Tours'
+  | 'Onsen'
+  | 'Concierge'
+  | 'River View'
+  | 'Jungle Trekking'
+  | 'Mountain View'
+  | 'Taj View'
+  | 'Bonfire'
+  | 'Cycling'
+  | 'Ganga View'
+  | 'Business Center';
 
 export interface Hotel {
   id: string;
   name: string;
   cityName: string;
   country: string;
-  starRating: number;
-  userRating: number;
-  reviewsCount: number;
+  // Support both field name styles
+  starRating?: number;
+  rating?: number;
+  userRating?: number;
+  reviewsCount?: number;
   pricePerNight: number;
   currency: CurrencyCode;
-  style: BudgetStyle;
-  coverImage: string;
-  gallery: string[];
+  style?: BudgetStyle;
+  // Support both image field styles  
+  coverImage?: string;
+  images?: string[];
+  gallery?: string[];
   address: string;
-  amenities: AmenityType[];
-  aiMatchScore: number; // e.g. 98
-  whyAiRecommends: string;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
+  amenities: any[];
+  aiMatchScore?: number;
+  whyAiRecommends?: string;
+  whyRecommended?: string;
+  description?: string;
+  coordinates?: { lat: number; lng: number };
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface Activity {
@@ -49,18 +78,24 @@ export interface Activity {
   cityName: string;
   country: string;
   category: ActivityCategory;
-  duration: string; // e.g. "3.5 hours"
+  // Support both duration field styles
+  duration?: string;
+  durationMinutes?: number;
   estimatedCost: number;
   currency: CurrencyCode;
   rating: number;
-  reviewsCount: number;
-  coverImage: string;
+  reviewsCount?: number;
+  // Support both image field styles
+  coverImage?: string;
+  images?: string[];
   description: string;
-  recommendedTimeSlot: 'morning' | 'afternoon' | 'evening' | 'night';
-  suggestedTime: string; // e.g. "09:00"
-  location: string;
-  tags: string[];
-  highlights: string[];
+  recommendedTimeSlot?: 'morning' | 'afternoon' | 'evening' | 'night';
+  suggestedTime?: string;
+  location?: string;
+  tags?: string[];
+  highlights?: string[];
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface HotelFilterParams {
@@ -71,6 +106,7 @@ export interface HotelFilterParams {
   amenities?: AmenityType[];
   style?: BudgetStyle | 'all';
   sortBy?: 'aiMatch' | 'priceAsc' | 'priceDesc' | 'rating';
+  searchQuery?: string;
 }
 
 export interface ActivityFilterParams {

@@ -31,6 +31,8 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
     culture: 'neutral',
     nightlife: 'ai',
     nature: 'success',
+    shopping: 'amber',
+    other: 'neutral',
   };
 
   return (
@@ -77,7 +79,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = ({
 
         {/* Highlights */}
         <div className="space-y-1 text-[11px] text-slate-500 pt-1">
-          {activity.highlights.slice(0, 2).map((h, i) => (
+          {(activity.highlights || []).slice(0, 2).map((h, i) => (
             <div key={i} className="flex items-center gap-1.5 truncate">
               <span className="w-1.5 h-1.5 rounded-full bg-teal-500 shrink-0" />
               <span className="truncate">{h}</span>

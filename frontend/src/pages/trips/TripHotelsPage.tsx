@@ -78,17 +78,17 @@ export const TripHotelsPage: React.FC = () => {
       hotelName: hotel.name,
       cityId: activeCityStop?.id || 'city-1',
       cityName: activeCityStop?.cityName || hotel.cityName,
-      starRating: hotel.starRating,
+      starRating: hotel.starRating || hotel.rating || 4,
       pricePerNight: hotel.pricePerNight,
       nights: allocatedNights,
       totalCost,
       currency: hotel.currency,
       checkInDate: currentTrip.startDate,
       checkOutDate: currentTrip.endDate,
-      address: hotel.address,
-      image: hotel.coverImage,
-      amenities: hotel.amenities,
-      whyRecommended: hotel.whyAiRecommends,
+      address: hotel.address || hotel.cityName,
+      image: hotel.coverImage || (hotel.images && hotel.images[0]) || '',
+      amenities: hotel.amenities || [],
+      whyRecommended: hotel.whyAiRecommends || hotel.whyRecommended || 'Highly recommended',
     };
 
     // Replace booking for this city stop or add new

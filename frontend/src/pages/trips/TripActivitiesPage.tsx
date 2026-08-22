@@ -92,14 +92,14 @@ export const TripActivitiesPage: React.FC = () => {
       date: formattedDate,
       cityName: activeCityStop?.cityName || schedulingActivity.cityName,
       timeSlot: selectedTimeSlot,
-      duration: schedulingActivity.duration,
+      duration: schedulingActivity.duration || `${Math.round((schedulingActivity.durationMinutes || 120) / 60)} hours`,
       title: schedulingActivity.title,
       category: schedulingActivity.category as any,
-      location: schedulingActivity.location,
+      location: schedulingActivity.location || schedulingActivity.cityName,
       estimatedCost: schedulingActivity.estimatedCost,
       currency: schedulingActivity.currency,
-      notes: customNote || schedulingActivity.highlights.join(' • '),
-      image: schedulingActivity.coverImage,
+      notes: customNote || (schedulingActivity.highlights || []).join(' • '),
+      image: schedulingActivity.coverImage || (schedulingActivity.images && schedulingActivity.images[0]) || '',
       rating: schedulingActivity.rating,
     };
 

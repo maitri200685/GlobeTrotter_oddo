@@ -26,7 +26,7 @@ export const getTrips = async (req: Request, res: Response, next: NextFunction) 
       endDate: trip.end_date,
       totalDays: trip.start_date && trip.end_date ? 
         Math.max(1, Math.ceil((new Date(trip.end_date).getTime() - new Date(trip.start_date).getTime()) / (1000 * 60 * 60 * 24)) + 1) : 0,
-      status: trip.status || 'upcoming',
+      status: trip.status === 'planning' ? 'upcoming' : trip.status === 'active' ? 'upcoming' : trip.status || 'upcoming',
       cities: trip.trip_stops?.map((stop: any) => ({
         id: stop.id,
         cityName: stop.cities?.name,
@@ -79,7 +79,7 @@ export const getTripById = async (req: Request, res: Response, next: NextFunctio
       endDate: trip.end_date,
       totalDays: trip.start_date && trip.end_date ? 
         Math.max(1, Math.ceil((new Date(trip.end_date).getTime() - new Date(trip.start_date).getTime()) / (1000 * 60 * 60 * 24)) + 1) : 0,
-      status: trip.status || 'upcoming',
+      status: trip.status === 'planning' ? 'upcoming' : trip.status === 'active' ? 'upcoming' : trip.status || 'upcoming',
       cities: trip.trip_stops?.map((stop: any) => ({
         id: stop.id,
         cityName: stop.cities?.name,
@@ -147,7 +147,9 @@ export const createTrip = async (req: Request, res: Response, next: NextFunction
         end_date: endDate,
         total_budget: targetBudget || 0,
         cover_image_url: coverImage,
-        owner_id: req.user!.id // Extracted from verified JWT
+        owner_id: req.user!.id, // Extracted from verified JWT
+        status: 'planning', // 'planning' is the valid DB enum for a new trip
+        visibility: 'private'
       })
       .select()
       .single();

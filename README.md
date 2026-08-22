@@ -1,4 +1,4 @@
-# 🌍 GlobeTrotter — AI-Powered Smart Travel Planner
+# 🌍 GlobeTrotter — Smart Travel Planner
 
 > **Plan smarter. Travel better. Experience more.**
 

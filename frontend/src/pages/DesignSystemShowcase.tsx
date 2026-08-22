@@ -184,7 +184,7 @@ export const DesignSystemShowcase: React.FC = () => {
               <CardContent className="space-y-4">
                 <Input
                   label="Destination City"
-                  placeholder="e.g. Goa, Paris, Kyoto"
+                  placeholder="e.g. Goa, Jaipur, Kerala"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   leftIcon={<MapPin className="w-4 h-4" />}
@@ -407,7 +407,7 @@ export const DesignSystemShowcase: React.FC = () => {
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2.5">Region</h4>
             <div className="flex flex-wrap gap-2">
-              {['All Regions', 'India', 'Southeast Asia', 'Europe', 'Japan'].map((region, idx) => (
+              {['All Regions', 'North India', 'South India', 'West India', 'Himalayas', 'Islands'].map((region, idx) => (
                 <button
                   key={idx}
                   type="button"

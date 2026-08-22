@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Compass, 
@@ -10,11 +10,12 @@ import {
   Settings, 
   ChevronLeft, 
   ChevronRight,
-  TrendingUp,
-  PlusCircle
+  LogOut
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import type { NavItem } from '@/types/navigation.types';
+import { Avatar } from '@/components/ui/Avatar';
+import { useAuth } from '@/context/AuthContext';
 
 interface AppSidebarProps {
   isCollapsed: boolean;
@@ -22,6 +23,14 @@ interface AppSidebarProps {
 }
 
 export const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleSignOut = async () => {
+    await logout();
+    navigate('/login');
+  };
+
   const mainNavItems: NavItem[] = [
     { id: 'dashboard', label: 'Dashboard', href: '/dashboard', iconName: 'LayoutDashboard' },
     { id: 'trips', label: 'My Trips', href: '/trips', iconName: 'Compass', badge: '4' },
@@ -120,26 +129,6 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed, onToggleCol
           </nav>
         </div>
 
-        {/* Quick Action Widget */}
-        {!isCollapsed && (
-          <div className="p-3.5 rounded-2xl bg-gradient-to-br from-terracotta-50/70 via-sand-50 to-amber-50/50 border border-terracotta-100">
-            <div className="flex items-center gap-2 mb-1.5">
-              <TrendingUp className="w-4 h-4 text-terracotta-600" />
-              <h4 className="text-xs font-bold text-slate-900">Trip Tip</h4>
-            </div>
-            <p className="text-[11px] text-slate-600 leading-relaxed mb-3">
-              Goa & Kerala are trending for sunset beach retreats this month.
-            </p>
-            <NavLink
-              to="/trips/create"
-              className="flex items-center justify-center gap-1.5 w-full py-1.5 px-3 bg-terracotta-500 hover:bg-terracotta-600 text-white rounded-xl text-xs font-semibold shadow-2xs transition-colors"
-            >
-              <PlusCircle className="w-3.5 h-3.5" />
-              <span>Create New Trip</span>
-            </NavLink>
-          </div>
-        )}
-
         <div>
           {!isCollapsed && (
             <p className="px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
@@ -179,6 +168,80 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed, onToggleCol
           </nav>
         </div>
       </div>
+
+      {/* User Profile Footer */}
+      {user && (
+        <div className="relative border-t border-slate-200/80 overflow-hidden bg-gradient-to-br from-terracotta-50/60 via-sand-50/80 to-amber-50/50">
+          <div className="relative p-3 sm:p-4">
+            {isCollapsed ? (
+              <div className="flex flex-col items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => navigate('/profile')}
+                  className="focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-500 rounded-full"
+                  title={user.name}
+                >
+                  <Avatar
+                    src={user.avatarUrl}
+                    name={user.name}
+                    size="md"
+                    status="online"
+                    className="ring-2 ring-white shadow-sm"
+                  />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                  title="Sign Out"
+                  aria-label="Sign Out"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => navigate('/profile')}
+                  className="shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-terracotta-500 rounded-full"
+                  title="View Profile"
+                >
+                  <Avatar
+                    src={user.avatarUrl}
+                    name={user.name}
+                    size="md"
+                    status="online"
+                    className="ring-2 ring-white shadow-sm"
+                  />
+                </button>
+                <div className="flex-1 min-w-0">
+                  <Link
+                    to="/profile"
+                    className="block focus:outline-none group"
+                  >
+                    <p className="text-xs font-bold text-slate-900 truncate group-hover:text-terracotta-600 transition-colors">
+                      {user.name}
+                    </p>
+                    <p className="text-[11px] text-slate-500 truncate">
+                      {user.email}
+                    </p>
+                  </Link>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="shrink-0 p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                  title="Sign Out"
+                  aria-label="Sign Out"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </aside>
   );
 };

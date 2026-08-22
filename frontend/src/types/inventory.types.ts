@@ -21,28 +21,8 @@ export type AmenityType =
   | 'Fitness Center' 
   | 'Air Conditioning'
   | 'Heritage Courtyard'
-  | 'Restaurant'
-  | 'Gym'
-  | 'Beach Access'
-  | 'Backwaters'
-  | 'Ayurveda'
-  | 'Yoga'
-  | 'Garden'
-  | 'Sea View'
-  | 'City Tours'
-  | 'Golf'
-  | 'Polo'
-  | 'Heritage Tours'
-  | 'Onsen'
-  | 'Concierge'
-  | 'River View'
-  | 'Jungle Trekking'
-  | 'Mountain View'
-  | 'Taj View'
-  | 'Bonfire'
-  | 'Cycling'
-  | 'Ganga View'
-  | 'Business Center';
+  | 'Rooftop View'
+  | 'Rooftop Temple View';
 
 export interface Hotel {
   id: string;

@@ -48,7 +48,6 @@ export const ProfilePage: React.FC = () => {
       <div className="relative bg-white rounded-3xl border border-slate-200/90 shadow-card overflow-hidden">
         {/* Cover Photo */}
         <div className="h-44 sm:h-56 bg-gradient-to-r from-terracotta-500 via-amber-500 to-teal-600 relative">
-          <div className="absolute inset-0 bg-black/20" />
           <div className="absolute top-4 right-4 flex items-center gap-2">
             <Link to="/settings">
               <Button

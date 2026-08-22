@@ -24,12 +24,9 @@ export const Avatar: React.FC<AvatarProps> = ({
   const [imageError, setImageError] = useState(false);
 
   const getInitials = (text?: string) => {
-    if (!text) return 'GT';
-    const parts = text.trim().split(' ');
-    if (parts.length >= 2) {
-      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-    }
-    return text.substring(0, 2).toUpperCase();
+    if (!text) return 'G';
+    const firstChar = text.trim().charAt(0);
+    return firstChar ? firstChar.toUpperCase() : 'G';
   };
 
   const sizeStyles = {
@@ -60,7 +57,7 @@ export const Avatar: React.FC<AvatarProps> = ({
       <div
         className={twMerge(
           clsx(
-            'rounded-full overflow-hidden flex items-center justify-center font-bold font-sans bg-sand-200 text-slate-700 border border-slate-200/80 shadow-2xs',
+            'rounded-full overflow-hidden flex items-center justify-center font-bold font-sans bg-sand-200 text-slate-700 border border-slate-200/80 shadow-2xs leading-none text-center',
             sizeStyles[size]
           )
         )}
@@ -73,7 +70,9 @@ export const Avatar: React.FC<AvatarProps> = ({
             className="w-full h-full object-cover"
           />
         ) : (
-          <span>{getInitials(name)}</span>
+          <span className="flex items-center justify-center w-full h-full leading-none">
+            {getInitials(name)}
+          </span>
         )}
       </div>
 

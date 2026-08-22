@@ -58,12 +58,12 @@ export const DashboardPage: React.FC = () => {
       tag: 'Amber',
     },
     {
-      id: 'rec-bali',
-      title: 'Bali Island Hopping & Sunsets',
+      id: 'rec-andaman',
+      title: 'Andaman Islands Beach & Scuba',
       duration: '7 Days / 6 Nights',
-      cost: '$1,100',
-      image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&h=400&q=80',
-      vibe: 'Beaches & Temples',
+      cost: '₹54,500',
+      image: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&w=600&h=400&q=80',
+      vibe: 'Beaches & Scuba',
       tag: 'Terracotta',
     },
   ];

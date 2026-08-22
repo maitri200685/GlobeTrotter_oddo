@@ -93,10 +93,104 @@ class AIService {
    * Backend: POST /api/ai/assist
    */
   async getAssistantSuggestions(request: AIAssistRequest): Promise<AIAssistResponse> {
-    // Backend assistant endpoint expects 'message' field, not 'query'
-    const response = await apiClient.post<{ message: string; status?: string; intent?: string }>(`/trips/${request.tripId}/assistant`, {
-      message: request.query,
-    });
+    await MOCK_DELAY(900);
+
+    const lower = request.query.toLowerCase();
+
+    const isCostQuery = lower.includes('cheap') || lower.includes('cost') || lower.includes('budget') || lower.includes('save');
+    const isHotelQuery = lower.includes('hotel') || lower.includes('stay') || lower.includes('accommodation');
+    const isActivityQuery = lower.includes('beach') || lower.includes('activity') || lower.includes('night') || lower.includes('food');
+    const isScheduleQuery = lower.includes('relax') || lower.includes('busy') || lower.includes('day') || lower.includes('rest');
+
+    const suggestions: AISuggestion[] = [];
+
+    if (isCostQuery) {
+      suggestions.push(
+        {
+          id: `ai-${Date.now()}-1`,
+          type: 'swap_hotel',
+          title: 'Switch to 3★ Boutique Stay',
+          description: 'Swap to a highly-rated 3-star property. Same location, 35% cheaper, excellent reviews.',
+          budgetImpact: -4200,
+          currency: 'INR',
+          category: 'savings',
+          priority: 'high',
+        },
+        {
+          id: `ai-${Date.now()}-2`,
+          type: 'budget_cut',
+          title: 'Use Local Transport',
+          description: 'Switch 3 private cab rides to local transport. Saves time and significant cost.',
+          budgetImpact: -2800,
+          currency: 'INR',
+          category: 'savings',
+          priority: 'medium',
+        }
+      );
+    }
+
+    if (isHotelQuery) {
+      suggestions.push({
+        id: `ai-${Date.now()}-3`,
+        type: 'upgrade',
+        title: 'Upgrade to Beachfront Property',
+        description: 'Available 4.5★ beachfront suite — highly recommended for your travel style.',
+        budgetImpact: 3200,
+        currency: 'INR',
+        category: 'enhancement',
+        priority: 'low',
+      });
+    }
+
+    if (isActivityQuery) {
+      suggestions.push({
+        id: `ai-${Date.now()}-4`,
+        type: 'add_activity',
+        title: 'Add Sunset Beachside Dinner',
+        description: 'Top-rated 4.9★ oceanfront restaurant. Perfect for your beach + food interests.',
+        budgetImpact: 1800,
+        currency: 'INR',
+        category: 'enhancement',
+        priority: 'medium',
+      });
+    }
+
+    if (isScheduleQuery) {
+      suggestions.push({
+        id: `ai-${Date.now()}-5`,
+        type: 'reschedule',
+        title: 'Convert Tomorrow to Leisure Day',
+        description: 'Remove all scheduled activities and replace with a free exploration block.',
+        budgetImpact: -1200,
+        currency: 'INR',
+        category: 'optimization',
+        priority: 'high',
+      });
+    }
+
+    // Default suggestion if no category matched
+    if (suggestions.length === 0) {
+      suggestions.push({
+        id: `ai-${Date.now()}-6`,
+        type: 'budget_cut',
+        title: 'Optimize Overall Transport',
+        description: 'Reorganize your route to minimize unnecessary travel time and cost.',
+        budgetImpact: -1800,
+        currency: 'INR',
+        category: 'savings',
+        priority: 'medium',
+      });
+    }
+
+    const messages: Record<string, string> = {
+      cost: `I've analyzed your trip budget and found **${suggestions.length} optimizations** that can save up to ₹${Math.abs(suggestions.reduce((s, x) => s + Math.min(0, x.budgetImpact), 0)).toLocaleString()} without affecting experience quality.`,
+      hotel: `Here are the best hotel alternatives based on your travel style, location preferences, and remaining budget.`,
+      activity: `I found some amazing experiences that perfectly match your interests. Here's what I'd recommend adding to your itinerary.`,
+      schedule: `I can help make your schedule more relaxed. Here's how I'd restructure your days.`,
+      default: `Based on your trip details, here are my top recommendations to improve your experience.`,
+    };
+
+    const messageKey = isCostQuery ? 'cost' : isHotelQuery ? 'hotel' : isActivityQuery ? 'activity' : isScheduleQuery ? 'schedule' : 'default';
 
     return {
       message: response.message,

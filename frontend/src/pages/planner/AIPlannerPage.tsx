@@ -313,7 +313,7 @@ export const AIPlannerPage: React.FC = () => {
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      placeholder="Where do you want to go? (e.g. Goa, Kyoto, Paris)"
+                      placeholder="Where do you want to go? (e.g. Goa, Jaipur, Kerala)"
                       value={destination}
                       onChange={(e) => setDestination(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleDestinationSubmit()}
@@ -324,7 +324,7 @@ export const AIPlannerPage: React.FC = () => {
                     </Button>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {['Goa 🏖️', 'Jaipur 🏰', 'Kyoto ⛩️', 'Paris 🗼', 'Bali 🌿'].map((dest) => (
+                    {['Goa 🏖️', 'Jaipur 🏰', 'Kerala 🌿', 'Ladakh 🏔️', 'Varanasi 🪔'].map((dest) => (
                       <button
                         key={dest}
                         type="button"
@@ -529,7 +529,7 @@ export const AIPlannerPage: React.FC = () => {
               {[
                 { dest: 'Goa', days: 5, budget: '₹25,000', tag: '🏖️ Beach & Party' },
                 { dest: 'Rajasthan', days: 8, budget: '₹45,000', tag: '🏰 Heritage Circuit' },
-                { dest: 'Kyoto', days: 6, budget: '$1,200', tag: '⛩️ Cultural Immersion' },
+                { dest: 'Ladakh', days: 9, budget: '₹78,500', tag: '🏔️ High Mountain Adventure' },
               ].map((plan) => (
                 <div key={plan.dest} className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200 text-xs hover:border-purple-300 transition-colors cursor-pointer"
                   onClick={() => { setDestination(plan.dest); setTimeout(handleDestinationSubmit, 100); }}>

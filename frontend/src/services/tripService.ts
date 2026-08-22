@@ -26,8 +26,7 @@ class TripService {
       // Apply client-side filters (search, sort) not supported by backend
       return this._applyClientFilters(trips || [], filters);
     } catch {
-      // Fallback: load from localStorage if backend is unavailable
-      console.warn('[TripService] Backend unavailable, loading from local storage');
+      // Fallback: load from localStorage if backend is unavailable or user not authenticated
       const local = storageService.getItem<Trip[]>(TRIPS_STORE_KEY, []);
       return this._applyClientFilters(local, filters);
     }

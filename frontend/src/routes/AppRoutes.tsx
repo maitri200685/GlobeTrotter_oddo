@@ -10,6 +10,9 @@ import { SignupPage } from '@/pages/auth/SignupPage';
 import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage';
 import { ProfilePage } from '@/pages/profile/ProfilePage';
 import { SettingsPage } from '@/pages/profile/SettingsPage';
+import { SavedPage } from '@/pages/profile/SavedPage';
+import { DestinationGuidePage } from '@/pages/public/DestinationGuidePage';
+import { PublicSharePage } from '@/pages/public/PublicSharePage';
 import { DesignSystemShowcase } from '@/pages/DesignSystemShowcase';
 
 // Phase 3 Pages
@@ -96,7 +99,7 @@ export const AppRoutes: React.FC = () => {
           path="/saved"
           element={
             <ProtectedRoute>
-              <ProfilePage />
+              <SavedPage />
             </ProtectedRoute>
           }
         />
@@ -172,6 +175,15 @@ export const AppRoutes: React.FC = () => {
             </ProtectedRoute>
           }
         />
+        {/* Alias: /itinerary → same builder page */}
+        <Route
+          path="/trips/:tripId/itinerary"
+          element={
+            <ProtectedRoute>
+              <TripItineraryPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Phase 7: Multi-Day Calendar Schedule & Interactive Journey Map */}
         <Route
@@ -238,40 +250,8 @@ export const AppRoutes: React.FC = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/destinations/:id"
-          element={
-            <PlaceholderPage
-              title="Destination Deep Dive Guide"
-              subtitle="Complete city guide, top attractions, recommended stays, and typical daily costs."
-              phaseNumber={11}
-              phaseName="Explore, Sharing & Forking"
-              icon={<MapPin className="w-6 h-6" />}
-              featuresList={[
-                'Photo gallery & best season to visit',
-                'Top rated activities and neighborhood guide',
-                '"Plan Trip to this City" 1-click CTA',
-              ]}
-            />
-          }
-        />
-        <Route
-          path="/share/:shareId"
-          element={
-            <PlaceholderPage
-              title="Public Shared Itinerary"
-              subtitle="Read-only public view with one-click 'Copy Trip to My Account' feature."
-              phaseNumber={11}
-              phaseName="Explore, Sharing & Forking"
-              icon={<Share2 className="w-6 h-6" />}
-              featuresList={[
-                'High-aesthetic public presentation layout',
-                'Day-by-day timeline, hotel cards, and map',
-                '1-Click "Copy / Fork Trip" to clone into user account',
-              ]}
-            />
-          }
-        />
+        <Route path="/destinations/:id" element={<DestinationGuidePage />} />
+        <Route path="/share/:shareId" element={<PublicSharePage />} />
 
         {/* Fallback 404 Route */}
         <Route path="*" element={<NotFoundPage />} />
